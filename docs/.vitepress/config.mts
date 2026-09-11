@@ -4,6 +4,7 @@ import { defineConfig } from 'vitepress'
 export default defineConfig({
   title: "IBM Client Engineering",
   description: "IBM Bob and Maximo Automation Scripts",
+  base: '/maximo-bob-labs/',
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [
