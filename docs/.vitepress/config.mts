@@ -24,7 +24,8 @@ export default defineConfig({
       {
         text: 'Maximo Automation Scripts',
         items: [
-          { text: 'Overview', link: '/maximo-script-modernization/'}
+          { text: 'Overview', link: '/maximo-script-modernization/'},
+          { text: 'Script Modernization', link: '/maximo-script-modernization/maximo-script-modernization-lab' }
         ]
       }
     ],

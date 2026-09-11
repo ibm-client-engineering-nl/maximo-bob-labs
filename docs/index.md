@@ -17,3 +17,7 @@ features:
   - title: Maximo Script Modernization
     details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
 ---
+
+::: warning 🚧 Under Construction
+This site is actively being built. Content may be incomplete or subject to change.
+:::
