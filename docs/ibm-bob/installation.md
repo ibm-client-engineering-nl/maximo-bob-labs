@@ -1,3 +1,3 @@
 # Installing IBM Bob
 
-See https://bob.ibm.com/docs/ide/getting-started/install
+See [Installing the IBM Bob IDE official documentation](https://bob.ibm.com/docs/ide/getting-started/install).
