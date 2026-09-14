@@ -2,145 +2,198 @@
 This section is actively being built. Content may be incomplete or subject to change.
 :::
 
-# Maximo Script Modernization Lab · feed Bob real legacy scripts and modernize them
-## Bob MODE: pre-sales-demo-infrastructure.yaml · SKILL: maximo-suite
+## Maximo Modernization Bob Skills
 
-This lab is the opposite and more common real-world job — take **existing, deprecated
-automation scripts** (the 7.5/7.6 idioms a customer actually has in their system)
-and have Bob **transform them to current idioms** using the `maximo-suite` skill's
-documented old→new rules. It's the demo that lands the "we can modernize your
-existing Maximo customizations safely, no rewrite-from-scratch" message.
+Maximo Modernization building blocks enable AI-powered automation script optimization and legacy Java-to-automation script conversion for IBM Maximo Application Suite (MAS).
 
-The legacy scripts live in **`legacy-scripts/`** next to this file. Point Bob at
-that folder. Each script carries one or more deprecated patterns on purpose.
+### Available Assets & Skills
 
-> Transformation is **offline** — Bob reads the files and rewrites them with no
-> Maximo needed. A live instance is only required for the optional **validate +
-> redeploy** step (Test dialog + push the source back over REST). No environment?
-> Do the transforms now; redeploy when access lands (same as the mock-only posture
-> in SKILL.md §9).
+#### maximo-code-optimization.zip
 
-Cluster: Asset Operations · Industry: cross-industry · Output shape: modernized
-automation-script source + a per-script change report
+A comprehensive skill for analyzing and optimizing Maximo automation scripts:
 
-### PREPARATION
-- Bob with the `maximo-suite` skill installed, opened on the `LAB` folder so it can read `legacy-scripts/`
-- (Optional, for the redeploy/validate step) a reachable Maximo / MAS Manage instance + an API key or credentials
-- Nothing to install for the transforms themselves
+* Fetch and analyze scripts directly via Maximo REST APIs (`MXAPIAUTOSCRIPT`).
+* Automated security analysis (SQL injection prevention, input validation) and performance improvements (MboSet lifecycle, caching).
+* Detailed severity-ranked before/after reports and logging best practices with `MXLoggerFactory`.
 
-### The old→new ruleset Bob applies (from the skill)
-| Deprecated idiom | Modern idiom | Reference |
-|---|---|---|
-| `errorkey`/`errorgroup`/`params` flags | `service.error(grp,key,params)` (real-time, stops execution) | scripting-service-mbo-api.md |
-| `print` debugging | `service.log(...)` / per-script logger | scripting-test-debug.md |
-| Map/HashMap library calls | function-based `service.invokeScript(name,fn,args)` | scripting-service-mbo-api.md |
-| Object **Init** attribute init | Attribute **Init Value** launch point | scripting-launchpoints.md |
-| User-exit message skip | Publish Channel **Event Filter** | scripting-rest-integration.md |
-| Literal MboConstants (`2L`) | named `mbo.NOACCESSCHECK` | scripting-service-mbo-api.md |
-| Rhino `importPackage`/`eval` + Mozilla shim | Nashorn `Java.type`/`JSON.parse` | scripting-launchpoints.md |
-| repeated `count()`, unclosed MboSet, unguarded log | cached count, `try/finally cleanup()`, `service.isLoggingEnabled()` | scripting-test-debug.md |
+If you would like to use this skill, click [maximo-code-optimization.zip](/maximo/maximo-code-optimization.zip) to download it as a ZIP archive.
 
----
+#### maximo_java_conversion.zip
 
-## Step 0 - Inventory (kickoff prompt)
+A comprehensive skill for converting legacy Maximo Java classes to automation scripts:
 
-> Have Bob scan the folder and produce the modernization report before touching
-> any single script.
+* Business logic preservation across Python/Jython, JavaScript, Nashorn, and ECMAScript.
+* Automated generation of test scripts alongside converted automation scripts.
+* Batch conversion capabilities with comprehensive validation reports.
 
-```text
-Use the maximo-suite skill. Read every script in the legacy-scripts/ folder.
-For each one, identify the deprecated Maximo scripting idioms it uses (errorkey/
-errorgroup flags, print debugging, Map-style library calls, Object-Init attribute
-initialization, user-exit message skipping, literal MboConstants, Rhino/Mozilla-
-compat JavaScript, repeated count()/unclosed MboSet/unguarded logging). Produce a
-table: script, launch point, idioms found, risk, and the modern replacement you'll
-apply. Don't change anything yet.
+If you would like to use this skill, click [maximo_java_conversion.zip](/maximo/maximo_java_conversion.zip) to download it as a ZIP archive.
+
+### Installation and Setup
+
+#### Step 1: Extract the Skills to Bob Workspace
+
+Click the download link in the section above to download the desired skill(s). Next, extract the ZIP archive(s) into your Bob workspace skills directory. For this, change directory to your workspace.
+
+```bash
+cd /path/to/your/bob/workspace
 ```
 
----
+and then unzip the downloaded skills into your workspace.
 
-## The exercises
-
-Run these one at a time. Each names the file, the smell to look for, and the prompt.
-Expected results are in the **Answer key** at the end — use it to check Bob's work.
-
-### E1 - `ASSETNUM_VALIDATION.py` · deprecated errors + display-value compare
-Smell: raises via `errorgroup`/`errorkey`/`params` (fires only after the script
-finishes, not real-time) and compares the **display** value of `assettype`.
-```text
-Modernize legacy-scripts/ASSETNUM_VALIDATION.py: replace the errorgroup/errorkey/
-params flags with real-time service.error(...) calls, and compare the asset type
-on its INTERNAL value (atype_internal or the translator), not the display value.
-Show a before/after diff and note the behavior change (errors now stop execution
-immediately).
+```bash
+unzip /path/to/downloaded-zip-archive/maximo-code-optimization.zip
+unzip /path/to/downloaded-zip-archive/maximo_java_conversion.zip
 ```
 
-### E2 - `PO_NOLINES_CHECK.py` · print + repeated count() + error flags
-Smell: `print` (not real-time), `count()` called twice (2 SQLs), `errorkey`.
-```text
-Modernize legacy-scripts/PO_NOLINES_CHECK.py: cache count() in a variable, swap
-print for service.log, and raise the error with service.error. If this should be a
-non-blocking warning instead of a hard stop, show me that variant with
-service.setWarning too.
+#### Step 2: Verify Installation
+
+Check that the skill files are present:
+
+```bash
+ls -la .bob/skills/
 ```
 
-### E3 - `CALC.py` + `PO_TOTALS.py` · Map-style library script
-Smell: single-purpose library script invoked by building a `HashMap` and reading
-the result back out of it.
-```text
-Modernize the CALC library script and its caller PO_TOTALS.py: convert CALC to the
-function-based style (def mult(a,b)) and update PO_TOTALS to call
-service.invokeScript("CALC","mult",[2,3]). Remind me to enable "Allow Invoking
-Script Functions" when creating CALC, and that the flag can't be changed afterward.
-```
+### Understand the Optimization Skill
 
-### E4 - `SPAREPART_QTY_INIT.py` · Object-Init attribute initialization
-Smell: an Object **Initialize** script that sets a calculated attribute, so it runs
-for every Asset in every List-tab/bulk/API fetch even when the field isn't shown.
-```text
-Modernize legacy-scripts/SPAREPART_QTY_INIT.py: move the calculation off the Object
-Initialize event onto an Attribute launch point for sparepartqty (Init Value for the
-value, Init for the read-only flag) so it only runs when the attribute is referenced.
-Explain the performance reason and give me the new launch-point config + script.
-```
+1. Open IBM Bob and make sure you've selected the **Ask** mode.
 
-### E5 - `COUNTRY_LOOKUP.js` · Rhino-era JavaScript
-Smell: `importPackage`, `eval()`-based JSON parse, depends on the Mozilla
-compatibility shim under Nashorn.
-```text
-Modernize legacy-scripts/COUNTRY_LOOKUP.js for Nashorn: replace importPackage with
-Java.type, parse the response with JSON.parse instead of eval, and drop anything
-that needs the Mozilla compatibility script. Keep the lookup behavior
-(listMboSet/srcKeys/targetKeys) identical.
-```
+2. Next, write a prompt to get the Maximo Modernization Skill explained. A sample prompt would be:
 
-### E6 - `PUBLISH.MXASSETINTERFACE.USEREXIT.OUT.BEFORE.py` · user-exit skip
-Smell: skips the outbound message at the **user exit**, after serialization cost is
-already paid.
-```text
-Modernize legacy-scripts/PUBLISH.MXASSETINTERFACE.USEREXIT.OUT.BEFORE.py: move the
-skip logic to a Publish Channel Event Filter (PUBLISH.MXASSETINTERFACE.EVENTFILTER)
-so it runs before serialization. Use service.getMbo() and set evalresult correctly,
-and tell me what to do with the old user-exit script.
-```
+   ```
+   Give me a concise overview of the Maximo Code Optimization skill. Explain the workflow and what exactly will be optimized
+   ```
 
-### E7 - `SET_REPLCOST.py` · literal flags + leaked MboSet
-Smell: literal `2L` for a MboConstants flag, an `MXServer`-created MboSet that's
-never closed, `count()` called twice, an unguarded `service.log`.
-```text
-Modernize legacy-scripts/SET_REPLCOST.py: replace the literal 2L with
-mbo.NOACCESSCHECK, wrap the MXServer-created MboSet in try/finally with cleanup(),
-cache count() in a variable, and guard the log with service.isLoggingEnabled().
-```
+   The output should be similar to:
 
----
+   ::: info What It Does
 
-## Step N - Validate & redeploy (optional, needs a live instance)
+   The skill transforms Bob into an expert Maximo automation script optimizer. It can fetch scripts directly from a live Maximo environment via REST API, analyze them for issues, rewrite them with fixes, and produce detailed reports — all in a structured, interactive workflow.
 
-```text
-For each modernized script, walk me through validating it in the Automation Scripts
-Test dialog: the Object Path and Set Attribute Values to reproduce the original
-behavior, and the deactivate-to-isolate steps to A/B the old vs new script. Once a
-script passes, show me the REST call (discover the autoscript object structure via
-apimeta first) to push the updated source back to the instance.
-```
+   **The 5-Phase Workflow**
+
+   | Phase | What Happens |
+   |---|---|
+   | **1 – Setup** | Creates a `maximo-scripts/` project structure, asks for your Maximo URL and API key, stores credentials in a `.env` file, and installs Python dependencies (`requests`, `python-dotenv`, `urllib3`). |
+   | **2 – Fetching** | Runs `fetch_maximo_scripts.py` against the Maximo REST endpoint `MXAPIAUTOSCRIPT`. Scripts are saved to `original/` with their exact Maximo names (e.g., `OSACTION.MXAPIINSPRESULT.CREATEWO.py`). |
+   | **3 – Analysis** | Each script is inspected across 4 severity levels: **Critical**, **High**, **Medium**, and **Low**. |
+   | **4 – Optimization** | Fixed versions are written to `optimized/` using the exact same filenames. |
+   | **5 – Reporting** | Individual `{SCRIPTNAME}_report.md` files and a `SUMMARY_REPORT.md` are generated in `reports/`. |
+
+   **What Gets Optimized**
+
+   The skill targets **5 core capability areas**:
+
+   - **Security** — SQL injection prevention, input validation, JSON/XML injection guards
+   - **Error Handling & Logging** — `try/catch/finally` blocks, `MXLoggerFactory` logging
+   - **Resource Management** — `MboSet` lifecycle management, connection and memory leak prevention
+   - **Performance** — optimized `WHERE` clauses, reduced iterations, fewer redundant DB calls
+   - **Code Quality** — null safety checks, dead code removal, improved comments and formatting
+
+   **Output Structure**
+
+   ```
+   maximo-scripts/
+     .env                  ← credentials (not committed to git)
+     tools/
+       fetch_maximo_scripts.py
+       requirements.txt
+     original/             ← unmodified scripts from Maximo
+     optimized/            ← rewritten scripts with all fixes
+     reports/              ← per-script + summary Markdown reports
+   ```
+
+   Each report includes issue locations with line numbers, before/after code comparisons, impact explanations, testing recommendations, and a deployment checklist.
+   :::
+
+3. Next, repeat this exercise for the Maximo Java Conversion skill.
+
+Asking IBM Bob to explain a skill before you use it is a great way to quickly understand its capabilities and limitations, so you can craft better prompts and get more accurate, reliable results from the start.
+
+### Run the Optimization Skill
+
+Start the workflow with the **Agent** mode active. Enter a prompt in Bob. The system then:
+
+* Asks for your Maximo base URL and API key, and sets up the project structure.
+* Connects to your Maximo environment and fetches the target `LEGACY_` automation scripts via `MXAPIAUTOSCRIPT`.
+* Analyzes each script for security, performance, resource, and code quality issues.
+* Generates an optimized version of each script.
+* Creates an individual report per script and an overall `SUMMARY_REPORT.md`.
+
+After the workflow completes, review the generated files as well as the conversation output.
+
+1. In the IBM Bob prompt field, enter:
+
+    ```
+    Optimize my Maximo scripts
+    ```
+
+    This prompt starts the full optimization workflow. Bob reads the workflow configuration and runs the fetch tool, which automatically retrieves the `LEGACY_` scripts used for the purpose of this lab.
+
+
+1. When Bob asks for your environment details, enter:
+
+    * **Maximo base URL**: Base URL of the asset management system.
+    * **API key**: API key or authentication token.
+
+    Bob stores these values in `maximo-scripts/.env` and uses them to connect to the REST API.
+
+1. Bob shows a task list with the optimization steps. Use this list to track progress during analysis, issue detection, and code generation.
+
+    Bob processes each script in order. For each script, it:
+
+    * Checks code quality for performance, security, maintainability, and coding standards.
+    * Identifies issues by severity (Critical, High, Medium, Low).
+    * Generates optimized code with the same business logic where possible.
+    * Creates a report with before-and-after examples, testing guidance, and deployment notes.
+
+1. After all scripts are processed, Bob shows a summary. The generated lab output contains eight optimized files in `maximo-scripts/optimized/` and eight detailed reports plus `SUMMARY_REPORT.md` in `maximo-scripts/reports/`.
+
+    The generated summary must reconcile with the individual reports. In the validated output, the reports contain **28 issues**: **4 Critical, 16 High, and 8 Medium**. The per-script totals and severity totals in `SUMMARY_REPORT.md` must equal these same values.
+
+1. Review the generated files rather than relying only on the chat output. The workflow writes:
+
+    * Original scripts to `maximo-scripts/original/`.
+    * Optimized scripts with matching filenames to `maximo-scripts/optimized/`.
+    * Per-script reports and `SUMMARY_REPORT.md` to `maximo-scripts/reports/`.
+
+    Confirm that the number of originals, optimized scripts, and per-script reports is eight and that filenames match.
+
+1. If Bob does not process all scripts, or if you want to analyze a script again, enter a new prompt:
+
+    ```
+    Re-analyze script SCRIPT_NAME and generate an optimized version
+    ```
+
+    Replace `SCRIPT_NAME` with the exact script name. The system retrieves, analyzes, and updates that script only. Review the resulting optimized file and report again.
+
+### Review the optimization report
+
+After the workflow completes, review the per-script optimization reports and the optimized source before you apply any changes.
+
+1. In `maximo-scripts/reports/`, locate the report matching each optimized filename. Each report shows the launch point, severity-ranked issues, fixes, testing recommendations, and deployment notes. The reports do not all contain a complete before/after listing, so compare the report snippets directly with the corresponding files in `maximo-scripts/original/` and `maximo-scripts/optimized/`.
+
+1. For each script, review the **Issue Summary** and **Testing Recommendations** sections. Check that the optimized code preserves the correct business logic. Validate the changes against your system configuration and business rules before deployment.
+
+1. Compare the generated output with the workflow requirements:
+
+    | Workflow requirement | Result in the tested output |
+    |---|---|
+    | Analyze every fetched script | **Met.** Eight originals, eight optimized scripts, and eight per-script reports are present. |
+    | Preserve exact script filenames and language extensions | **Met.** Optimized files use the matching names and `.py`/`.js` extensions. |
+    | Identify issues by Critical, High, Medium, and Low severity | **Partially met.** The per-script reports provide severity classifications, but the summary totals do not match the detailed reports. |
+    | Fix security, resource, performance, null-safety, error-handling, and logging issues | **Partially met.** The optimized files address these categories, but some changes require Maximo configuration or version-specific validation before deployment. |
+    | Generate before/after comparisons, testing guidance, and deployment recommendations | **Partially met.** Reports include issue summaries, code examples, testing recommendations, and deployment notes; not every report contains a complete before/after listing. |
+    | Preserve business logic | **Requires validation.** Several optimized scripts introduce configuration or behavior changes, so this cannot be confirmed from static output alone. |
+
+1. The tested output has these report-level findings:
+
+    * [`LEGACY_COUNTRY_LOOKUP_report.md`](../../maximo-scripts/reports/LEGACY_COUNTRY_LOOKUP_report.md) identifies `eval()`, plaintext HTTP, and hardcoded credentials as Critical security issues. The optimized file removes `eval()` and inline credentials, but the configured endpoint must still be verified as HTTPS and authentication must be configured securely.
+    * [`LEGACY_SET_REPLCOST_report.md`](../../maximo-scripts/reports/LEGACY_SET_REPLCOST_report.md) identifies an `MboSet` resource leak as Critical. The optimized file adds cleanup in `finally`, but the replacement flag and Maximo runtime compatibility require validation.
+    * [`LEGACY_PO_NOLINES_CHECK_report.md`](../../maximo-scripts/reports/LEGACY_PO_NOLINES_CHECK_report.md) identifies the print statements, repeated `count()`, unclosed MboSet, and deprecated error signalling. The optimized file addresses these findings with logging, a cached count, cleanup, and `service.error()`.
+    * [`LEGACY_CALC_report.md`](../../maximo-scripts/reports/LEGACY_CALC_report.md) and [`LEGACY_PO_TOTALS_report.md`](../../maximo-scripts/reports/LEGACY_PO_TOTALS_report.md) require coordinated script-variable configuration before deployment.
+    * [`LEGACY_SPAREPART_QTY_INIT_report.md`](../../maximo-scripts/reports/LEGACY_SPAREPART_QTY_INIT_report.md) contains a version-dependent `isLimitedAttribute()` recommendation that must be validated against the target Maximo version.
+    * [`LEGACY_PUBLISH.MXASSETINTERFACE.USEREXIT.OUT.BEFORE_report.md`](../../maximo-scripts/reports/LEGACY_PUBLISH.MXASSETINTERFACE.USEREXIT.OUT.BEFORE_report.md) recommends an Object Event Filter as an architectural improvement; the generated source remains a User Exit implementation.
+
+1. Open the matching report for each script you plan to deploy. Review **Deployment Notes**, **Testing Recommendations**, and any prerequisite configuration. In particular, do not deploy scripts with configuration-dependent recommendations until those prerequisites and the target Maximo version have been verified.
+
+1. Set deployment priority based on verified severity and business impact. Fix **Critical** issues first (especially `eval()`, plaintext HTTP, hardcoded credentials, and resource leaks), followed by **High** issues such as missing error handling, null safety, and performance problems. Treat architectural recommendations such as launch-point changes as configuration changes, not drop-in source replacements.
