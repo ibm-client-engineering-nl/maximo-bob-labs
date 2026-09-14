@@ -168,33 +168,43 @@ After the workflow completes, review the generated files as well as the conversa
 
 ### Review the optimization report
 
-After the workflow completes, review the per-script optimization reports and the optimized source before you apply any changes.
+After the workflow completes, Bob surfaces findings in the chat and writes the full output to disk. Review both before applying any changes — the chat gives you the immediate picture; the files on disk give you the detail you need to deploy safely.
 
-1. In `maximo-scripts/reports/`, locate the report matching each optimized filename. Each report shows the launch point, severity-ranked issues, fixes, testing recommendations, and deployment notes. The reports do not all contain a complete before/after listing, so compare the report snippets directly with the corresponding files in `maximo-scripts/original/` and `maximo-scripts/optimized/`.
+1. **Check the Bob chat output first.** When the workflow finishes, Bob prints a summary directly in the conversation. It shows the list of analyzed scripts, the total number of issues found, a severity breakdown, and the top finding per script. Before opening any file, confirm that the summary matches the expected output for this lab:
 
-1. For each script, review the **Issue Summary** and **Testing Recommendations** sections. Check that the optimized code preserves the correct business logic. Validate the changes against your system configuration and business rules before deployment.
+    * **8 scripts** analyzed
+    * **28 issues** found: 4 Critical, 16 High, 8 Medium
+    * All 8 script names appear (`LEGACY_ASSETNUM_VALIDATION`, `LEGACY_CALC`, `LEGACY_COUNTRY_LOOKUP`, `LEGACY_PO_NOLINES_CHECK`, `LEGACY_PO_TOTALS`, `LEGACY_PUBLISH.MXASSETINTERFACE.USEREXIT.OUT.BEFORE`, `LEGACY_SET_REPLCOST`, `LEGACY_SPAREPART_QTY_INIT`)
 
-1. Compare the generated output with the workflow requirements:
+    If the counts differ or scripts are missing, re-run the analysis for the missing scripts before continuing (see the prompt in the previous section).
 
-    | Workflow requirement | Result in the tested output |
-    |---|---|
-    | Analyze every fetched script | **Met.** Eight originals, eight optimized scripts, and eight per-script reports are present. |
-    | Preserve exact script filenames and language extensions | **Met.** Optimized files use the matching names and `.py`/`.js` extensions. |
-    | Identify issues by Critical, High, Medium, and Low severity | **Partially met.** The per-script reports provide severity classifications, but the summary totals do not match the detailed reports. |
-    | Fix security, resource, performance, null-safety, error-handling, and logging issues | **Partially met.** The optimized files address these categories, but some changes require Maximo configuration or version-specific validation before deployment. |
-    | Generate before/after comparisons, testing guidance, and deployment recommendations | **Partially met.** Reports include issue summaries, code examples, testing recommendations, and deployment notes; not every report contains a complete before/after listing. |
-    | Preserve business logic | **Requires validation.** Several optimized scripts introduce configuration or behavior changes, so this cannot be confirmed from static output alone. |
+1. **Open `maximo-scripts/reports/SUMMARY_REPORT.md`** for the full picture. This file is the starting point for deployment planning. It contains three sections you need to work through before touching individual scripts:
 
-1. The tested output has these report-level findings:
+    * The **per-script table** lists every script with its Critical, High, and Medium counts and its top issue. Use this to quickly identify which scripts carry the most risk.
+    * The **Critical Issues** block names the four issues that must be addressed before any deployment: `eval()` code injection and hardcoded HTTP credentials in `LEGACY_COUNTRY_LOOKUP`, Python 2 print statements in `LEGACY_PO_NOLINES_CHECK`, and the MboSet connection leak in `LEGACY_SET_REPLCOST`. Each entry explains the runtime impact and the fix applied.
+    * The **Deployment Priority** table organises the eight scripts into four tiers:
 
-    * `LEGACY_COUNTRY_LOOKUP_report.md` identifies `eval()`, plaintext HTTP, and hardcoded credentials as Critical security issues. The optimized file removes `eval()` and inline credentials, but the configured endpoint must still be verified as HTTPS and authentication must be configured securely.
-    * `LEGACY_SET_REPLCOST_report.md` identifies an `MboSet` resource leak as Critical. The optimized file adds cleanup in `finally`, but the replacement flag and Maximo runtime compatibility require validation.
-    * `LEGACY_PO_NOLINES_CHECK_report.md` identifies the print statements, repeated `count()`, unclosed MboSet, and deprecated error signalling. The optimized file addresses these findings with logging, a cached count, cleanup, and `service.error()`.
-    * `LEGACY_CALC_report.md` and `LEGACY_PO_TOTALS_report.md` require coordinated script-variable configuration before deployment.
-    * `LEGACY_SPAREPART_QTY_INIT_report.md` contains a version-dependent `isLimitedAttribute()` recommendation that must be validated against the target Maximo version.
-    * `LEGACY_PUBLISH.MXASSETINTERFACE.USEREXIT.OUT.BEFORE_report.md` recommends an Object Event Filter as an architectural improvement; the generated source remains a User Exit implementation.
-    * `LEGACY_ASSETNUM_VALIDATION_report.md` identifies a High null-safety issue where `getString()` can return `None`, causing an `AttributeError` and a silent transaction rollback. The optimized file guards both fields with `or ""` and adds `MXLoggerFactory` logging for traceability.
+        | Priority | Scripts | Reason |
+        |----------|---------|--------|
+        | **Immediate** | `LEGACY_COUNTRY_LOOKUP`, `LEGACY_SET_REPLCOST` | Security vulnerabilities and connection leak that worsen under load |
+        | **Next release** | `LEGACY_PO_NOLINES_CHECK`, `LEGACY_ASSETNUM_VALIDATION` | Stability fixes (null safety, syntax) |
+        | **Planned** | `LEGACY_CALC`, `LEGACY_PO_TOTALS`, `LEGACY_SPAREPART_QTY_INIT` | Performance and modernisation |
+        | **Enhancement** | `LEGACY_PUBLISH.MXASSETINTERFACE.USEREXIT.OUT.BEFORE` | Architecture improvement (migrate to Object Event Filter) |
 
-1. Open the matching report for each script you plan to deploy. Review **Deployment Notes**, **Testing Recommendations**, and any prerequisite configuration. In particular, do not deploy scripts with configuration-dependent recommendations until those prerequisites and the target Maximo version have been verified.
+1. **Review each per-script report** in `maximo-scripts/reports/`. Open the report for the script you are planning to deploy. Each report follows the same structure — work through it in order:
 
-1. Set deployment priority based on verified severity and business impact. Fix **Critical** issues first (especially `eval()`, plaintext HTTP, hardcoded credentials, and resource leaks), followed by **High** issues such as missing error handling, null safety, and performance problems. Treat architectural recommendations such as launch-point changes as configuration changes, not drop-in source replacements.
+    * **Header table** — confirms the script name, language, launch point, issue count, and highest severity. Verify the launch point matches what is configured in your Maximo environment before proceeding.
+    * **Issue Summary table** — lists every detected issue with its severity and category. This is the checklist you validate against the optimized source.
+    * **Per-issue sections** — each issue includes a description of the problem, the lines affected, and a before/after code snippet. Compare the *before* snippet against `maximo-scripts/original/` and the *after* snippet against `maximo-scripts/optimized/` to confirm the fix was applied correctly and that business logic is preserved.
+    * **Testing Recommendations** — provides concrete test scenarios with expected results. Use these to drive your test cases in the Maximo Automation Scripts Test dialog before deploying to production.
+    * **Deployment Notes** — lists prerequisites, launch-point configuration changes, and any environment-specific steps. Do not deploy a script until every item in this section has been verified against your target environment.
+
+1. **Validate your findings against the expected output.** Your per-script reports should contain the following findings. If a finding is missing or the severity differs, re-run the analysis for that script.
+
+    * `LEGACY_COUNTRY_LOOKUP_report.md` — 2 Critical: `eval()` code injection and plaintext HTTP with hardcoded credentials. The optimized file removes both; verify the replacement endpoint uses HTTPS and that credentials are moved to a Maximo system property.
+    * `LEGACY_SET_REPLCOST_report.md` — 1 Critical: `MboSet` obtained from `MXServer` is never closed, exhausting the connection pool under load. The optimized file adds `try/finally` cleanup; verify the `NOACCESSCHECK` flag and Maximo runtime version before deploying.
+    * `LEGACY_PO_NOLINES_CHECK_report.md` — 1 Critical: Python 2 `print` statements. The optimized file replaces them with `MXLoggerFactory` and fixes the repeated `count()`, unclosed `MboSet`, and deprecated error signalling.
+    * `LEGACY_ASSETNUM_VALIDATION_report.md` — 1 High: `getString()` can return `None`, causing an `AttributeError` and a silent transaction rollback. The optimized file guards both fields with `or ""` and adds `MXLoggerFactory` logging.
+    * `LEGACY_CALC_report.md` and `LEGACY_PO_TOTALS_report.md` — coordinated deployment required. Both scripts share context variables; deploy together and verify script-variable configuration before activating either.
+    * `LEGACY_SPAREPART_QTY_INIT_report.md` — version-dependent recommendation: `isLimitedAttribute()` must be validated against your target Maximo version before deploying.
+    * `LEGACY_PUBLISH.MXASSETINTERFACE.USEREXIT.OUT.BEFORE_report.md` — architectural improvement only. The generated source remains a User Exit implementation; migrating to an Object Event Filter is a separate configuration change, not a drop-in script replacement.
