@@ -187,12 +187,13 @@ After the workflow completes, review the per-script optimization reports and the
 
 1. The tested output has these report-level findings:
 
-    * [`LEGACY_COUNTRY_LOOKUP_report.md`](../../maximo-scripts/reports/LEGACY_COUNTRY_LOOKUP_report.md) identifies `eval()`, plaintext HTTP, and hardcoded credentials as Critical security issues. The optimized file removes `eval()` and inline credentials, but the configured endpoint must still be verified as HTTPS and authentication must be configured securely.
-    * [`LEGACY_SET_REPLCOST_report.md`](../../maximo-scripts/reports/LEGACY_SET_REPLCOST_report.md) identifies an `MboSet` resource leak as Critical. The optimized file adds cleanup in `finally`, but the replacement flag and Maximo runtime compatibility require validation.
-    * [`LEGACY_PO_NOLINES_CHECK_report.md`](../../maximo-scripts/reports/LEGACY_PO_NOLINES_CHECK_report.md) identifies the print statements, repeated `count()`, unclosed MboSet, and deprecated error signalling. The optimized file addresses these findings with logging, a cached count, cleanup, and `service.error()`.
-    * [`LEGACY_CALC_report.md`](../../maximo-scripts/reports/LEGACY_CALC_report.md) and [`LEGACY_PO_TOTALS_report.md`](../../maximo-scripts/reports/LEGACY_PO_TOTALS_report.md) require coordinated script-variable configuration before deployment.
-    * [`LEGACY_SPAREPART_QTY_INIT_report.md`](../../maximo-scripts/reports/LEGACY_SPAREPART_QTY_INIT_report.md) contains a version-dependent `isLimitedAttribute()` recommendation that must be validated against the target Maximo version.
-    * [`LEGACY_PUBLISH.MXASSETINTERFACE.USEREXIT.OUT.BEFORE_report.md`](../../maximo-scripts/reports/LEGACY_PUBLISH.MXASSETINTERFACE.USEREXIT.OUT.BEFORE_report.md) recommends an Object Event Filter as an architectural improvement; the generated source remains a User Exit implementation.
+    * `LEGACY_COUNTRY_LOOKUP_report.md` identifies `eval()`, plaintext HTTP, and hardcoded credentials as Critical security issues. The optimized file removes `eval()` and inline credentials, but the configured endpoint must still be verified as HTTPS and authentication must be configured securely.
+    * `LEGACY_SET_REPLCOST_report.md` identifies an `MboSet` resource leak as Critical. The optimized file adds cleanup in `finally`, but the replacement flag and Maximo runtime compatibility require validation.
+    * `LEGACY_PO_NOLINES_CHECK_report.md` identifies the print statements, repeated `count()`, unclosed MboSet, and deprecated error signalling. The optimized file addresses these findings with logging, a cached count, cleanup, and `service.error()`.
+    * `LEGACY_CALC_report.md` and `LEGACY_PO_TOTALS_report.md` require coordinated script-variable configuration before deployment.
+    * `LEGACY_SPAREPART_QTY_INIT_report.md` contains a version-dependent `isLimitedAttribute()` recommendation that must be validated against the target Maximo version.
+    * `LEGACY_PUBLISH.MXASSETINTERFACE.USEREXIT.OUT.BEFORE_report.md` recommends an Object Event Filter as an architectural improvement; the generated source remains a User Exit implementation.
+    * `LEGACY_ASSETNUM_VALIDATION_report.md` identifies a High null-safety issue where `getString()` can return `None`, causing an `AttributeError` and a silent transaction rollback. The optimized file guards both fields with `or ""` and adds `MXLoggerFactory` logging for traceability.
 
 1. Open the matching report for each script you plan to deploy. Review **Deployment Notes**, **Testing Recommendations**, and any prerequisite configuration. In particular, do not deploy scripts with configuration-dependent recommendations until those prerequisites and the target Maximo version have been verified.
 
