@@ -243,7 +243,7 @@ After the workflow completes, Bob surfaces findings in the chat and writes the f
 1. Copy and paste the following prompt into the chat and submit it:
 
     ```
-    Create a plan to deploy the optimized scripts to Maximo. Deploy the scripts in the recommended order taking dependencies into account. Deploy scripts that fix critical issues first, then High, etc. IMPORTANT: To prevent conflicts with automation scripts of the other participants, replace the prefix LEGACY_ with your initials followed by underscore. Ask me if I did not provide my initials yet. Make sure all scripts are successfully deployed.
+    Create a plan to deploy the optimized scripts to Maximo. Deploy the scripts in the recommended order taking dependencies into account. Deploy scripts that fix critical issues first, then High, etc. IMPORTANT: To prevent conflicts with automation scripts of the other participants, replace the prefix LEGACY_ with your initials followed by underscore. Ask me if I did not provide my initials yet. Make sure all scripts and their corresponding appropriate launch points and script variable configurations (as documented in the reports and original script headers) are successfully deployed or configured.
     ```
 
 1. Approve to use Skill create-plan.
