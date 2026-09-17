@@ -264,3 +264,5 @@ After the workflow completes, Bob surfaces findings in the chat and writes the f
 
 > **Note — deployment prerequisites vs. runtime configuration:** Bob may include environment-specific configuration steps (such as Maximo system properties or Integration endpoint records) in the deployment plan. Not all of these need to happen *before* deploying the script — some are only required before *using* the feature. For example, the `maximo.country.api.url` system property read by `LEGACY_COUNTRY_LOOKUP` does not need to exist before the script is deployed via the API. The script will deploy successfully either way; the property only needs to be configured before users trigger the country lookup field. If you are unsure whether a prerequisite is a deployment blocker or a runtime dependency, ask Bob to clarify.
 
+
+

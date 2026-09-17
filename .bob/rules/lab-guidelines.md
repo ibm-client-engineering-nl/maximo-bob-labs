@@ -51,9 +51,9 @@ Check for existence first:
 `GET {base}/os/mxapilaunchpoint?lean=1&oslc.where=autoscript="<NAME>"&oslc.select=launchpointname`  
 Skip creation if the `member` array is non-empty.
 
-Object LP payload: `launchpointname`, `launchpointtype=OBJECT`, `objectname`, `autoscript`, `event`, `add`, `update`, `delete` (booleans), `active=true`.
+Object LP payload: `launchpointname`, `launchpointtype=OBJECT`, `objectname`, `autoscript`, `event`, `add`, `update`, `delete` (booleans), `active=false`.
 
-Attribute LP payload: same but `launchpointtype=ATTRIBUTE` and `attributename` instead of `add`/`update`/`delete`.
+Attribute LP payload: same but `launchpointtype=ATTRIBUTE` and `attributename` instead of `add`/`update`/`delete` (also `active=false`).
 
 ## Correct event strings
 
@@ -78,4 +78,4 @@ Never use a system or global `python` / `python3` executable for this lab.
 
 Any script whose name does not exactly match `PUBLISH.<channel>.USEREXIT.OUT.BEFORE` cannot be wired to a publish channel. Deploy such scripts with `active: false` and no launch point. Participants test them via the Automation Scripts Test dialog.
 
-# Made with Bob
+# Made with Bob 
