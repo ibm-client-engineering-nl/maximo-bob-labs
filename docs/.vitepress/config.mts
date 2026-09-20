@@ -1,10 +1,16 @@
 import { defineConfig } from 'vitepress'
+import { tabsMarkdownPlugin } from 'vitepress-plugin-tabs'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
   title: "IBM Client Engineering",
   description: "IBM Bob and Maximo Automation Scripts",
   base: '/maximo-bob-labs/',
+  markdown: {
+    config(md) {
+      md.use(tabsMarkdownPlugin)
+    },
+  },
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [
@@ -22,7 +28,8 @@ export default defineConfig({
         text: 'IBM Bob',
         items: [
           { text: 'Overview', link: '/ibm-bob/' },
-          { text: 'Installation', link: '/ibm-bob/installation' }
+          { text: 'Installation', link: '/ibm-bob/installation' },
+          { text: 'IDE Scavenger Hunt', link: '/ibm-bob/ide-scavenger-hunt' }
         ]
       },
       {
