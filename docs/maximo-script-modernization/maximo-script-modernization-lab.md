@@ -282,7 +282,7 @@ With the reports reviewed and the optimized scripts validated, it's time to depl
 
     | Script Name | Language | Launch Point Name | Launch Point Type | Event / Binding | Active |
     |---|---|---|---|---|---|
-    | `EC_COUNTRY_LOOKUP` | `nashorn` | `EC_COUNTRY_LOOKUP` | `ATTRIBUTE` (ADDRESS.ADDRESS5) | `RETRIEVELIST` | `false` |
+    | `EC_COUNTRY_LOOKUP` | `nashorn` | `EC_COUNTRY_LOOKUP` | `ATTRIBUTE` (ADDRESS.ADDRESS5) | `VALIDATE` | `false` |
     | `EC_PO_NOLINES_CHECK` | `jython` | `EC_PO_NOLINES_CHECK` | `OBJECT` (PO) | `SAVE` (Add=True, Update=True) | `false` |
     | `EC_SET_REPLCOST` | `jython` | `EC_SET_REPLCOST` | `ATTRIBUTE` (ASSET.PURCHASEPRICE) | `ACTION` | `false` |
     | `EC_CALC` | `jython` | *(None - Library)* | N/A | Callable via `service.invokeScript` | `false` |
@@ -313,38 +313,30 @@ In Maximo Application Suite, navigate to **System Configuration → Platform Con
 Below are the test instructions and validation scenarios for each deployed script, derived from the optimization reports.
 
 #### COUNTRY_LOOKUP
-:::danger Error
-This test section is not working properly yet.
-:::
-* **Script Type:** Attribute Launch Point — `ADDRESS.ADDRESS5` — `RETRIEVELIST` (JavaScript / Nashorn)
+
+* **Script Type:** Attribute Launch Point — `ADDRESS.ADDRESS5` — `VALIDATE` (JavaScript / Nashorn)
 * **Optimization Highlights:** Replaced `eval()` with safe `JSON.parse()`, moved external endpoint URL and credentials to system property `ext.country.api.url`, added error handling and `try/finally` cleanup on `MboSet` handles.
 
-> **Note on Retrieve List Testing:** In Maximo, `RETRIEVELIST` attribute launch points build dynamic value-lists over REST / OSLC APIs. To test this script, temporarily activate the launch point and ask Bob to trigger the `getlist~address5=1` endpoint.
+**Testing Steps in Maximo UI:**
 
-**Testing Steps & Scenarios:**
-1. In **System Configuration → Platform Configuration → System Properties**, verify that `ext.country.api.url` is defined and that its current value points to a valid HTTPS endpoint returning country JSON data. This has been preconfigured for you.
-2. **Activate Launch Point:** In **Automation Scripts**, open your `COUNTRY_LOOKUP` script and launch point, and set **Active** to `true` for both the script and the launch point.
-3. In the chat prompt, ask Bob:
-   ```
-   Test my deployed COUNTRY_LOOKUP script by making a GET request to the REST endpoint for ADDRESS.ADDRESS5 list retrieval using credentials in maximo-scripts/.env.
-   ```
-   Bob will invoke:
-   ```text
-   GET {MAXIMO_URL}/oslc/os/mxapiaddress?lean=1&getlist~address5=1
-   ```
-   - **Expected Result:** Maximo triggers the `RETRIEVELIST` launch point, executes `service.httpget(apiUrl)`, parses the response using `JSON.parse()`, builds the `COUNTRY` list MboSet, and returns the list of countries.
-4. **Missing System Property Test:**
-   - In System Properties, temporarily clear or blank out `ext.country.api.url` (and run Live Refresh).
-   - Ask Bob to execute the REST call again:
-     ```
-     Test the COUNTRY_LOOKUP REST endpoint again to verify behavior with missing system property.
-     ```
-   - **Expected Result:** The script catches that `!apiUrl` and returns the controlled error `countrylookup/missingproperty`.
-5. **Empty / Malformed Response Handling:**
-   - Temporarily point `ext.country.api.url` to an endpoint returning an empty body or invalid JSON.
-   - Ask Bob to re-run the REST query.
-   - **Expected Result:** An empty response raises `countrylookup/emptyresponse`; malformed JSON is caught by the `catch` block and logged via `service.log_error`, while `countriesSet.cleanup()` in the `finally` block guarantees no connection leaks.
-6. **Restore Configuration & Deactivate:** Revert `ext.country.api.url` to the valid endpoint URL in System Properties (with Live Refresh), and set the launch point back to **Inactive** (`active: false`).
+1. **Prerequisite:** In **System Configuration → Platform Configuration → System Properties**, verify that `ext.country.api.url` is defined and points to a valid HTTPS endpoint returning country JSON data. This has been preconfigured for you.
+2. **Activate Script & Launch Point:** In **Automation Scripts**, open `COUNTRY_LOOKUP` and ensure both the script and its launch point (`COUNTRY_LOOKUP`) have the **Active** checkbox checked.
+3. Open the `COUNTRY_LOOKUP` script record and click the **Test Script** button.
+4. **Scenario 1: Valid Country Code (Expected to succeed)**
+   - Under **Launch Point**, select `COUNTRY_LOOKUP`.
+   - Select **Existing Object** and set **Object Path** to: `ADDRESS[addresscode='BEDFORDMAIN' and orgid='EAGLENA']`.
+   - In the **Set attribute values** table, click **Add Row** (+) and set `ADDRESS5` to `NL`.
+   - Click the **Test** button in the bottom bar.
+   - **Expected Result:**
+     - The `VALIDATE` launch point fires, `service.httpget(apiUrl)` fetches the country list, `JSON.parse()` parses the response, and validation executes without error.
+     - In the **Process Log** (right pane), execution completes without exceptions.
+     - `<ADDRESS5 changed="1">NL</ADDRESS5>` appears in the **Data** pane.
+5. **Scenario 2: Missing System Property**
+   - In System Properties, temporarily clear `ext.country.api.url` and run **Live Refresh**.
+   - Re-run the test with the same object and `ADDRESS5 = NL`.
+   - **Expected Result:** The script catches `!apiUrl` and raises the controlled error `countrylookup/missingproperty` in the **Process Log**.
+   - Restore `ext.country.api.url` and run Live Refresh before proceeding.
+6. **Deactivate:** Return both the script and launch point to **Inactive** (`active: false`) after testing.
 
 #### PO_NOLINES_CHECK
 
@@ -412,9 +404,6 @@ This test section is not working properly yet.
 5. **Deactivate:** Return both the script and launch point to **Inactive** (`active: false`) after testing.
 
 #### PO_TOTALS & CALC Library
-:::danger Error
-This test section is not working properly yet.
-:::
 
 * **Script Type:**
   * `PO_TOTALS`: Object Launch Point - `PO` - `SAVE` (Before Save) (Jython)
@@ -433,7 +422,7 @@ This test section is not working properly yet.
    - Open the `PO_TOTALS` script record and click the **Test Script** button.
    - Under **Launch Point**, select `PO_TOTALS`.
    - Select **Existing Object** and set **Object Path** to: `PO[ponum='1005']`.
-   - In the **Set attribute values** table, click **Add Row** (+) and set `PRIORITY` to `1` to trigger the save event.
+   - In the **Set attribute values** table, click **Add Row** (+) and set `DESCRIPTION` to `Test PO Totals allow-invoke-off` to trigger the save event.
    - Click the **Test** button in the bottom bar.
    - **Expected Result:**
      - `service.invokeScript()` cannot locate `CALC`'s exported function because the flag is disabled.
@@ -468,7 +457,7 @@ This test section is not working properly yet.
    - Open the `PO_TOTALS` script record and click the **Test Script** button.
    - Under **Launch Point**, select `PO_TOTALS`.
    - Select **Existing Object** and set **Object Path** to: `PO[ponum='1005']`.
-   - In the **Set attribute values** table, click **Add Row** (+) and set `PRIORITY` to `1` to trigger the save event.
+   - In the **Set attribute values** table, click **Add Row** (+) and set `DESCRIPTION` to `Test PO Totals multiply` to trigger the save event.
    - Click the **Test** button in the bottom bar.
    - **Expected Result:**
      - `PO_TOTALS` invokes `CALC.calc("multiply", 2, 3)` and receives `6`.
@@ -480,7 +469,7 @@ This test section is not working properly yet.
 
 5. **Scenario 3: Division (`CALC.calc("divide", 10, 2)`):**
    - In `PO_TOTALS`'s source, temporarily change the `invokeScript` call to pass `"divide"` with operands `10` and `2`.
-   - Re-run the test with the same PO object and save trigger as above.
+   - Re-run the test with the same PO object. Set `DESCRIPTION` to `Test PO Totals divide`.
    - **Expected Result:**
      - `CALC` returns `5.0`.
      - `<CUSTOMTOTAL>5.0</CUSTOMTOTAL>` appears in the **Data** pane.
@@ -489,7 +478,7 @@ This test section is not working properly yet.
 
 6. **Scenario 4: Addition (`CALC.calc("add", 4, 7)`):**
    - Similarly, temporarily change the `invokeScript` call to `"add"` with operands `4` and `7`.
-   - Re-run the test.
+   - Re-run the test. Set `DESCRIPTION` to `Test PO Totals add`.
    - **Expected Result:**
      - `CALC` returns `11`.
      - `<CUSTOMTOTAL>11.0</CUSTOMTOTAL>` appears in the **Data** pane.
