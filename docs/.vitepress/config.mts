@@ -19,15 +19,15 @@ export default defineConfig({
       { text: 'Maximo Script Modernization', link: '/maximo-script-modernization/' }
     ],
 
-    outline: {
-          level: [2, 4]
-    },
+    // outline: {
+    //       level: [2, 4]
+    // },
 
     sidebar: [
       {
         text: 'IBM Bob',
         items: [
-          { text: 'Overview', link: '/ibm-bob/' },
+          { text: 'Getting Started', link: '/ibm-bob/' },
           { text: 'Installation', link: '/ibm-bob/installation' },
           { text: 'IDE Scavenger Hunt', link: '/ibm-bob/ide-scavenger-hunt' }
         ]
