@@ -37,18 +37,18 @@ To determine if you should choose the mac ARM or mac Intel installer:
 1. Download, then open the .pkg file for macOS.
 1. Complete the steps in the installation wizard.
 === Linux
-::: tabs
-== Debian
+::: details Debian
 1. Download the .deb file from the download page.
 1. Install with your package manager, or run the following command:
     ```
-    sudo apt install ./IBM-Bob-linux-amd64-1.105.1+bob1.0.0.deb
+    sudo apt install ./IBM-Bob-linux-amd64-1.126.0+bob2.1.0.deb
     ```
-== Red Hat
+:::
+::: details Red Hat
 1. Download the .rpm file from the download page.
 1. Install with your package manager, or run the following command:
     ```
-    sudo dnf install ./IBM-Bob-linux-x64-1.105.1+bob1.0.0.rpm
+    sudo dnf install ./IBM-Bob-linux-x64-1.126.0+bob2.1.0.rpm
     ```
 :::
 ::::
