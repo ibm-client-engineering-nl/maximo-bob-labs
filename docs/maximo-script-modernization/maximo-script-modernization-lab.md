@@ -551,44 +551,48 @@ This test section is not working properly yet.
 #### SPAREPART_QTY_INIT
 
 * **Script Type:** Object Launch Point — `ASSET` — `INIT` (Jython)
-* **Optimization Highlights:** Added a `UIContext.isFromListTab()` guard so the `sum(qtys)` calculation only runs when an asset is loaded in an interactive UI detail context, eliminating redundant child-set queries on list-tab loads, REST API calls, MIF transactions, and background escalations.
+* **Optimization Highlights:** Replaced the `sum(qtys)` IN-variable approach (which only ever returned the first spare part's quantity) with a direct `mbo.getMboSet("SPAREPART")` traversal to correctly sum all rows. Added an `app`-based context guard (`hasattr(app, 'isFromListTab') and app.isFromListTab()`) to skip the traversal on list-tab loads, where `app` is a unicode string rather than an app object. REST, MIF, and escalation contexts are not filtered by this guard — the full structural fix is to migrate to an Attribute Init Value launch point on `SPAREPARTQTY`.
 
 **Testing Steps in Maximo UI:**
 
 1. **Activate Script & Launch Point:** In **System Configuration → Platform Configuration → Automation Scripts**, open `SPAREPART_QTY_INIT` and ensure both the script and its launch point (`SPAREPART_QTY_INIT`) have the **Active** checkbox checked.
-2. Open the `SPAREPART_QTY_INIT` script record and click the **Test Script** button.
-3. **Scenario 1: Interactive Detail Tab Load — Calculation Executes**
+2. **Remove the `qtys` variable binding:** In the script record's **Variables** section, find the row with **Variable Name: `qtys`** and delete it. The script no longer uses an `IN` binding — it queries the `SPAREPART` child MboSet directly. Only the `sptqt` OUT binding should remain.
+3. Open the `SPAREPART_QTY_INIT` script record and click the **Test Script** button.
+
+4. **Scenario 1: Interactive Detail Tab Load — Calculation Executes**
    - Under **Launch Point**, select `SPAREPART_QTY_INIT`.
-   - Select **Existing Object** and set **Object Path** to an asset that has spare parts (e.g. `ASSET[assetnum='11400' and siteid='BEDFORD']`).
-   - In the **Set attribute values** table, click **Add Row** (➕) and set the bound `qtys` input variable to a list representative of the asset's spare part quantities (e.g. `[2, 3, 5]`).
+   - Select **Existing Object** and set **Object Path** to: `ASSET[assetnum='11400']` — this asset has 3 spare parts (ELEMENT KIT, PACKING LUBE DIVIDER VALVE, Bracket Steel Support), each with quantity `1.00`, giving a total of `3`.
+   - Leave the **Set attribute values** table empty.
    - Click the **Test** button in the bottom bar.
    - **Expected Result:**
-     - `UIContext.isFromListTab()` returns `False` in the test dialog context, so the guard is passed.
-     - `sptqt` is set to `sum([2, 3, 5])` = `10`.
-     - In the **Data** pane (left pane), locate `<SPAREPARTQTY>` in the XML output and confirm it is populated with `10`.
-     - In the **Process Log** (right pane), the debug log reads: `sparepartqty initialised to 10`.
+     - `hasattr(app, 'isFromListTab')` returns `True` in the Test Script dialog context and `app.isFromListTab()` returns `False`, so `is_list_tab` is `False` and the guard is passed.
+     - The script traverses the `SPAREPART` MboSet via `mbo.getMboSet("SPAREPART")`, reads `QUANTITY` from all 3 rows, and sets `sptqt = 3`.
+     - In the **Process Log** (right pane), the debug log reads: `sparepartqty initialised to 3`.
+     - `SPAREPARTQTY` may not appear in the **Data** pane XML — non-persistent attributes are omitted from the serialised output when their value matches the default. The Process Log entry is the authoritative confirmation.
      - `sptqt_readonly` is `True`, causing `SPAREPARTQTY` to render as read-only in the UI.
-4. **Scenario 2: Empty / Null Spare Parts — Default to Zero**
-   - In the **Set attribute values** table, remove the `qtys` row (or leave it blank) to simulate an asset with no spare parts.
+5. **Scenario 2: Empty / Null Spare Parts — Default to Zero**
+   - Change **Object Path** to: `ASSET[assetnum='11400']` — use the same asset but note that for a true zero-spare-parts test, any asset with an empty Spare Parts tab would give `sptqt = 0`.
+   - Leave the **Set attribute values** table empty.
    - Click the **Test** button.
    - **Expected Result:**
-     - `qtys` is `None`, so the `else` branch sets `sptqt = 0`.
-     - `<SPAREPARTQTY>0</SPAREPARTQTY>` appears in the **Data** pane.
-     - No `TypeError` is raised — the null-safety guard handles the missing input cleanly.
+     - `mbo.getMboSet("SPAREPART").moveFirst()` returns `None` immediately — the while loop does not execute.
+     - `sptqt = 0` (total remains at its initial value).
+     - `SPAREPARTQTY` does **not** appear in the **Data** pane XML — a non-persistent attribute with a zero/default value is omitted from the output. This is normal Maximo behaviour.
+     - The **Process Log** shows `sparepartqty initialised to 0`.
      - `sptqt_readonly` is still `True`.
-5. **Scenario 3: List Tab / Background Context Guard — Calculation is Skipped**
+6. **Scenario 3: List Tab / Background Context Guard — Calculation is Skipped**
 
-   > ℹ️ **The Maximo Test Script dialog always runs in a non-list-tab context.** To verify the PERF-02 guard, temporarily patch the `UIContext.isFromListTab()` call in the test source to return `True` (or ask Bob to add a temporary override), then run the test.
+   > ℹ️ **The Maximo Test Script dialog always runs in a non-list-tab context** (`app.isFromListTab()` returns `False`). To verify the PERF-02 guard, temporarily patch the script source in the dialog to hardcode `is_list_tab = True`, then run the test.
 
-   - Temporarily modify the script source in the dialog to simulate the list context:
+   - Temporarily modify the script source in the dialog:
      ```python
-     if not True:  # Simulating UIContext.isFromListTab() == True
+     is_list_tab = True  # Simulating list tab / background context
      ```
-   - Re-run the test with the same object path and `qtys = [2, 3, 5]` as Scenario 1.
+   - Re-run the test with `ASSET[assetnum='11400']`.
    - **Expected Result:**
-     - The body of the `if not UIContext.isFromListTab():` block is not entered.
-     - `sptqt` is never assigned — `<SPAREPARTQTY>` remains unchanged in the **Data** pane.
+     - `is_list_tab` is `True`, so the `if not is_list_tab:` block is not entered.
+     - `sptqt` is never assigned — `<SPAREPARTQTY>` remains absent from the **Data** pane.
      - In the **Process Log**, the `sparepartqty initialised to` debug message does **not** appear.
      - `sptqt_readonly` is still set to `True` (it sits outside the guard intentionally).
    - Revert the source change after confirming the result.
-6. **Deactivate:** Return both the script and launch point to **Inactive** (`active: false`) after testing.
+7. **Deactivate:** Return both the script and launch point to **Inactive** (`active: false`) after testing.
