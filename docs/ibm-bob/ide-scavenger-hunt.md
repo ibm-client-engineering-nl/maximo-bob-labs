@@ -8,7 +8,6 @@
 ### Prerequisites
 
 - IBM Bob IDE is installed and running.
-- Node.js 18 or later is installed (required for the MCP challenge).
 
 ### How this lab works
 
@@ -25,11 +24,13 @@ Bob IDE has an **Integrated Terminal** built in. Use it now to create the lab fo
 1. Open the Integrated Terminal inside Bob IDE with the keyboard shortcut **Ctrl + `` ` ``** (backtick) on all platforms, or via the menu **View → Terminal**.
 2. In the terminal panel that opens at the bottom of the IDE, run the appropriate command for your platform:
 
-::: code-group
-```[macOS / Linux]
+::: tabs key:macOS/LinuxWindows
+== macOS / Linux
+```
 mkdir -p ~/bob-scavenger-hunt
 ```
-```[Windows (PowerShell)]
+== Windows
+```
 New-Item -ItemType Directory -Force -Path "$HOME\bob-scavenger-hunt"
 ```
 :::
@@ -48,16 +49,16 @@ Now point Bob IDE at the folder you just created. You have two options:
 2. If no folder is open, the Explorer shows an **Open Folder** button — click it.
 3. Navigate to and select the `bob-scavenger-hunt` folder, then click **Open** / **Select Folder**.
 
-### Trust the workspace
+### Trust the folder
 
-Bob IDE may ask: *"Do you trust the authors of the files in this folder?"*
-Click **Yes, I trust the authors** to proceed. Bob requires workspace trust before it can read or write files.
+A banner appears at the top that says: "Restricted Mode is intended for safe code browsing. Trust this folder to enable all features."
+Click the **Manage** link, in the window that pops up click the **Trust** button and then close the window. 
 
-### Disable auto-approval
+### Permissions
 
-With the workspace open, check that **auto-approval is disabled**. Look for the slider above the Bob chat input at the bottom-right of the window. If it shows two white checkmarks, click the circle to disable it. You should see **"Auto-approval disabled"**. This ensures Bob asks for your permission before making any changes during the lab.
+With the workspace open, check the **Permissions**. You find a drop-down at the bottom of the Bob chat input. You should see **"Read"** permission is auto-approved. Bob asks will prompt for approval for the other permissions, for the lab leave the settings as is.
 
-✅ **Checkpoint:** The Explorer panel shows the `bob-scavenger-hunt` folder as the workspace root, the title bar reflects the folder name, and auto-approval is disabled.
+✅ **Checkpoint:** The Explorer panel shows the `bob-scavenger-hunt` folder as the workspace root, the title bar reflects the folder name, and auto-approval is only enabled for the **Read** permission.
 
 
 ## 🗺️ Clue 1 — The File Map (Explorer)
@@ -73,7 +74,7 @@ The **Explorer** is the file tree on the left side of the Bob IDE. It shows ever
 1. Click the **Explorer** icon (pages icon) at the top of the left-hand activity bar to open the Explorer panel.
 2. In the Explorer, right-click the root of your workspace and choose **New File**.
 3. Name the file `scavenger-notes.md`.
-4. Verify the file appears in the Explorer tree.
+4. Verify the file appears in the Explorer tree. The file is autmatically opened in the **Editor**.
 
 ✅ **Checkpoint:** `scavenger-notes.md` exists in your workspace root and is visible in the Explorer tree.
 
@@ -88,8 +89,7 @@ The **Editor** is the main central pane. Files you click in the Explorer open as
 
 ### Challenge 2A — Edit a file
 
-1. In the Explorer, click `scavenger-notes.md` to open it in the Editor.
-2. Type the following content:
+1. Copy the following content and paste it into the Editor tab named `scavenger-notes.md`:
 
 ```markdown
 # Scavenger Hunt Progress
@@ -105,7 +105,7 @@ The **Editor** is the main central pane. Files you click in the Explorer open as
 - [ ] Rules
 ```
 
-3. Save the file with **Cmd + S** (macOS) or **Ctrl + S** (Windows/Linux).
+1. Save the file with **Cmd + S** (macOS) or **Ctrl + S** (Windows/Linux).
 
 ### Challenge 2B — Use Literate Coding
 
@@ -121,8 +121,6 @@ Literate Coding lets you write a plain-English instruction directly in the edito
 
 4. Click **Generate** at the bottom of the document.
 5. Review Bob's proposed changes and click **Accept all**.
-6. Click **Exit** to leave Literate Coding mode.
-7. Save the file.
 
 ✅ **Checkpoint:** `scavenger-notes.md` now has descriptions under each checklist item, and the Editor tab shows the file with the accepted changes.
 
@@ -159,7 +157,7 @@ What files are currently in my workspace?
 Open scavenger-notes.md and mark the "Editor" and "Bob Chat Panel" items as complete by changing [ ] to [x].
 ```
 
-2. When Bob proposes the change, click **Save** to apply it.
+1. Click **Approve edit tools for task**.
 
 ✅ **Checkpoint:** In the chat panel you have a conversation history. `scavenger-notes.md` now shows `[x]` next to both **Editor** and **Bob Chat Panel**.
 
@@ -180,11 +178,13 @@ Bob stores all project-level configuration in a `.bob` folder at the root of you
 1. Open the Integrated Terminal with **Ctrl + `` ` ``** or via the menu **View → Terminal**.
 2. In the terminal panel, run the appropriate command for your platform:
 
-::: code-group
-```[macOS / Linux]
+::: tabs key:macOS/LinuxWindows
+== macOS / Linux
+```
 mkdir -p .bob/rules .bob/rules-doc-writer .bob/skills/hello-skill
 ```
-```[Windows (PowerShell)]
+== Windows
+```
 New-Item -ItemType Directory -Force -Path .bob/rules
 New-Item -ItemType Directory -Force -Path .bob/rules-doc-writer
 New-Item -ItemType Directory -Force -Path .bob/skills/hello-skill
@@ -197,11 +197,13 @@ New-Item -ItemType Directory -Force -Path .bob/skills/hello-skill
 
 Still in the Integrated Terminal, create the skill placeholder file you will flesh out in Clue 8:
 
-::: code-group
-```[macOS / Linux]
+::: tabs key:macOS/LinuxWindows
+== macOS / Linux
+```
 echo "# My First Skill" > .bob/skills/hello-skill/SKILL.md
 ```
-```[Windows (PowerShell)]
+== Windows
+```
 "# My First Skill" | Out-File -FilePath .bob/skills/hello-skill/SKILL.md -Encoding utf8
 ```
 :::
@@ -224,7 +226,7 @@ Bob operates in **modes**, each with a defined set of permissions and a specific
 | **Ask**   | Read files only — safe for exploring code |
 | **Plan**  | Read and plan — no writes or commands |
 
-You can also switch modes by typing a slash command (e.g. `/ask`) in the chat input, or with the keyboard shortcut **Cmd + .** (macOS) / **Ctrl + .** (Windows/Linux) to cycle through modes.
+You can also switch modes with the keyboard shortcut **Cmd + .** (macOS) / **Ctrl + .** (Windows/Linux).
 
 ### Challenge 5A — Explore the mode selector
 
@@ -241,7 +243,6 @@ What is the purpose of the .bob folder?
 ### Challenge 5B — Switch back to Agent mode
 
 1. Click the mode selector dropdown again and switch back to **Agent** mode.
-2. Alternatively, type `/agent` in the chat input and press **Enter**.
 
 ✅ **Checkpoint:** You have successfully switched between Ask mode and Agent mode using the mode selector dropdown. The current mode shown in the selector is **Agent**.
 
@@ -290,39 +291,6 @@ In the `.bob/mcp.json` file that just opened in your Editor, replace the entire 
 
 Save the file with **Cmd + S** (macOS) or **Ctrl + S** (Windows/Linux).
 
-Alternatively, you can create the same file from the **IDE's Integrated Terminal** (**Ctrl + `` ` ``**):
-
-::: code-group
-```[macOS / Linux]
-cat > .bob/mcp.json << 'EOF'
-{
-  "mcpServers": {
-    "my-local-tools": {
-      "command": "node",
-      "args": ["tools/server.js"],
-      "disabled": true,
-      "env": {}
-    }
-  }
-}
-EOF
-```
-```[Windows (PowerShell)]
-@'
-{
-  "mcpServers": {
-    "my-local-tools": {
-      "command": "node",
-      "args": ["tools/server.js"],
-      "disabled": true,
-      "env": {}
-    }
-  }
-}
-'@ | Out-File -FilePath .bob/mcp.json -Encoding utf8
-```
-:::
-
 ### Challenge 6C — Verify the configuration
 
 1. Go back to **Settings → MCP** in the Bob panel.
@@ -355,10 +323,10 @@ You can create modes through the **Settings → Modes** UI or by editing the YAM
 |---------------------|-----------------------------------------------------------------------|
 | **Slug**            | `doc-writer`                                                          |
 | **Name**            | `📝 Doc Writer`                                                       |
-| **Save Location**   | Project                                                               |
+| **Scope**           | `bob-scavenger-hunt`                                                  |
 | **Role Definition** | `You are a technical writer. You write clear, concise documentation.` |
 | **When to Use**     | `Use this mode for writing and reviewing Markdown documentation.`     |
-| **Available Tools** | Read files, Edit files                                                |
+| **Available Tools** | Read, Edit                                                            |
 
 4. Click **Save**.
 
@@ -384,8 +352,9 @@ customModes:
 
 Alternatively, you can create this file directly from the **IDE's Integrated Terminal** (**Ctrl + `` ` ``**):
 
-::: code-group
-```[macOS / Linux]
+::: tabs key:macOS/LinuxWindows
+== macOS / Linux
+```
 cat > .bob/custom_modes.yaml << 'EOF'
 customModes:
   - slug: doc-writer
@@ -397,7 +366,8 @@ customModes:
       - edit
 EOF
 ```
-```[Windows (PowerShell)]
+== Windows
+```
 @'
 customModes:
   - slug: doc-writer
@@ -474,8 +444,9 @@ Save the file.
 
 Alternatively, write this from the **IDE's Integrated Terminal** (**Ctrl + `` ` ``**):
 
-::: code-group
-```[macOS / Linux]
+::: tabs key:macOS/LinuxWindows
+== macOS / Linux
+```
 cat > .bob/skills/hello-skill/SKILL.md << 'EOF'
 ---
 name: hello-skill
@@ -493,7 +464,8 @@ Include a brief, one-sentence description of these five IBM Bob IDE features:
 Keep the entire response under 150 words. Use a friendly, encouraging tone.
 EOF
 ```
-```[Windows (PowerShell)]
+== Windows
+```
 @'
 ---
 name: hello-skill
@@ -522,7 +494,8 @@ Keep the entire response under 150 words. Use a friendly, encouraging tone.
 Give me a welcome message introducing the IBM Bob IDE.
 ```
 
-3. Press **Enter**. Bob should detect the skill's description, activate it, and respond using the instructions you defined.
+3. Press **Enter**.
+4. Click button **Approve skill tools for task**.
 
 ✅ **Checkpoint:** Bob responded with a structured welcome message covering the five IDE features, matching the style and length constraints you defined in the skill.
 
@@ -546,8 +519,9 @@ Files inside the rules directory are loaded alphabetically and combined. Support
 
 Create a rules file that applies to all modes in this project. Run the following in the **IDE's Integrated Terminal** (**Ctrl + `` ` ``**):
 
-::: code-group
-```[macOS / Linux]
+::: tabs key:macOS/LinuxWindows
+== macOS / Linux
+```
 cat > .bob/rules/project-rules.md << 'EOF'
 # Project Rules
 
@@ -557,7 +531,8 @@ cat > .bob/rules/project-rules.md << 'EOF'
 - When you are unsure about a requirement, ask a clarifying question before proceeding.
 EOF
 ```
-```[Windows (PowerShell)]
+== Windows
+```
 @'
 # Project Rules
 
@@ -573,8 +548,9 @@ EOF
 
 Now add rules that apply **only** when Bob is in your custom `doc-writer` mode. Run the following in the **IDE's Integrated Terminal** (**Ctrl + `` ` ``**):
 
-::: code-group
-```[macOS / Linux]
+::: tabs key:macOS/LinuxWindows
+== macOS / Linux
+```
 cat > .bob/rules-doc-writer/01-style.md << 'EOF'
 # Doc Writer Style Rules
 
@@ -584,7 +560,8 @@ cat > .bob/rules-doc-writer/01-style.md << 'EOF'
 - Every code example must have a one-line comment explaining what it does.
 EOF
 ```
-```[Windows (PowerShell)]
+== Windows
+```
 @'
 # Doc Writer Style Rules
 
@@ -614,11 +591,13 @@ Summarise the rules you are currently following for this project.
 
 In the **IDE's Integrated Terminal** (**Ctrl + `` ` ``**), run the following command to confirm your full `.bob` folder structure is in place:
 
-::: code-group
-```[macOS / Linux]
+::: tabs key:macOS/LinuxWindows
+== macOS / Linux
+```
 find .bob -type f | sort
 ```
-```[Windows (PowerShell)]
+== Windows
+```
 Get-ChildItem -Recurse -File .bob | Select-Object -ExpandProperty FullName | Sort-Object
 ```
 :::
