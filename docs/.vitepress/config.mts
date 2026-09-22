@@ -19,9 +19,9 @@ export default defineConfig({
       { text: 'Maximo Script Modernization', link: '/maximo-script-modernization/' }
     ],
 
-    // outline: {
-    //       level: [2, 4]
-    // },
+    outline: {
+          level: [2, 3]
+    },
 
     sidebar: [
       {
