@@ -1,7 +1,3 @@
-::: warning 🚧 Under Construction
-This section is actively being built. Content may be incomplete or subject to change.
-:::
-
 ## Maximo Modernization Bob Skills
 
 The Maximo modernization building blocks enable AI-powered automation script optimization and legacy Java-to-automation script conversion for IBM Maximo Application Suite (MAS).
@@ -35,7 +31,14 @@ To use this skill, click [maximo_java_conversion.zip](/maximo/maximo_java_conver
 
 #### Extract the Skills to Bob Workspace
 
-1. Click the download link in the section above to download the desired skill(s). Next, extract the ZIP archive(s) into your Bob workspace skills directory. For this, change directory to your workspace.
+1. Create a new directory for your Bob workspace and open it in Bob.
+
+   ```bash
+   mkdir -p /path/to/your/bob/workspace
+   cd /path/to/your/bob/workspace
+   ```
+
+1. Click the [download](/maximo/maximo-code-optimization.zip) link in the section above to download the desired skill(s). Next, extract the ZIP archive(s) into your Bob workspace skills directory. For this, change directory to your workspace.
 
    ```bash
    cd /path/to/your/bob/workspace
@@ -53,7 +56,7 @@ To use this skill, click [maximo_java_conversion.zip](/maximo/maximo_java_conver
 1. Check that the skill files are present:
 
    ```bash
-   ls -la .bob/skills/
+   ls -lRa .bob/skills/
    ```
 
 ### Understand the Optimization Skill
@@ -127,13 +130,15 @@ In this section you run the Maximo Code Optimization skill triggered by a prompt
 
 After the workflow completes, review the generated reports as well as the optimzed scripts.
 
-1. In the IBM Bob chat field, enter:
+1. In IBM Bob, click the mode selector and switch to **Agent** mode.
+
+1. Next, enter the following prompt:
 
     ```
     Optimize my automation scripts
     ```
 
-    This prompt starts the full optimization workflow. Bob reads the workflow configuration and runs the fetch tool, which automatically retrieves the `LEGACY_` scripts used for the purpose of this lab.
+    This prompt starts the full optimization workflow. Bob reads the workflow configuration and amongst others runs the fetch tool, which automatically retrieves the `LEGACY_` scripts used for the purpose of this lab.
 
 
 1. When Bob asks for your environment details, enter:
@@ -168,7 +173,7 @@ After the workflow completes, Bob surfaces findings in the chat and writes the f
 1. Check the Bob chat output first. Your results should generally match what's below. A handful of the analysis rules involve borderline judgment calls rather than a fixed checklist match, so the exact High/Medium counts might occasionally differ from run to run. Use the figures below as your baseline, and use the ranges only to judge whether a difference is within that normal variation or worth a re-run:
 
    * **Critical: 5,** 
-   * **High: 12–14,** 
+   * **High: 12–15,** 
    * **Medium: 2–3,** 
    * **Low: 0.**
    * All 8 script names appear: `LEGACY_ASSETNUM_VALIDATION`, `LEGACY_CALC`, `LEGACY_COUNTRY_LOOKUP`, `LEGACY_PO_NOLINES_CHECK`, `LEGACY_PO_TOTALS`, `LEGACY_PUBLISH.MXASSETINTERFACE.USEREXIT.OUT.BEFORE`, `LEGACY_SET_REPLCOST`, `LEGACY_SPAREPART_QTY_INIT`
@@ -190,7 +195,7 @@ After the workflow completes, Bob surfaces findings in the chat and writes the f
       * **Planned** — remaining scripts with only Medium findings, or scripts whose fix requires a configuration change beyond a drop-in script update (typically `LEGACY_PUBLISH.MXASSETINTERFACE.USEREXIT.OUT.BEFORE`, which needs an Event Filter launch-point migration).
       * **Enhancement** — anything left with only Low findings. Often empty for this script set.
 
-    A script appears in exactly one tier — the earliest one it qualifies for. The quickest check: open the Critical Issues block from the previous step and confirm every script named there also appears in Immediate here. If a script with a Critical finding this run shows up in a lower tier instead, priority is being pulled from somewhere other than this run's actual findings — flag it and ask Bob to recompute the table from the individual reports.
+    A script appears in exactly one category — the earliest one it qualifies for. The quickest check: open the Critical Issues block from the previous step and confirm every script named there also appears in Immediate here. If a script with a Critical finding this run shows up in a lower tier instead, priority is being pulled from somewhere other than this run's actual findings — flag it and ask Bob to recompute the table from the individual reports.
 
 1. Review each script-specific report in `maximo-scripts/reports/`. Open the report for the script you are planning to deploy. Each report follows the same structure — work through it in order. Carefully check the **Issues Found** table in the report and check if the code in the script triggered the right rules.
 
@@ -204,28 +209,15 @@ With the reports reviewed and the optimized scripts validated, it's time to depl
 1. Copy and paste the following prompt into the chat and submit it:
 
     ```
-    Create a plan to deploy the optimized scripts in maximo-scripts to Maximo.
+    Create a deployment plan for the optimized scripts in maximo-scripts/. Ask for my
+    initials if I haven't provided them — replace LEGACY_ with <INITIALS>_ everywhere:
+    script names, logger strings, and log messages.
 
-    IMPORTANT: To prevent conflicts with automation scripts of the other participants,
-    replace the prefix LEGACY_ with my initials followed by underscore. Ask me for my
-    initials if I have not already provided them. Apply this renaming inside the script
-    source too — update any MXLoggerFactory.getLogger("maximo.script.<NAME>") call and
-    any log message text that references the script's own name, so log output is
-    traceable back to the deployed name, not the original LEGACY_ name.
-
-    Deploy every script's autoscript record with active: false, and every launch point
-    with active: false, so nothing goes live automatically. Make sure all scripts and
-    their corresponding appropriate launch points and script variable configurations
-    (as documented in the reports and original script headers) are successfully
-    deployed or configured.
-
-    For each script, check its individual report's Deployment Recommendations section
-    for environment-specific prerequisites (system properties, Integration endpoint
-    records, etc.). Treat anything explicitly described as required before deploying
-    as a blocker — configure or flag it before that script is deployed. Treat anything
-    described as only needed once the feature is used as a runtime dependency — note
-    it in the plan but do not block deployment on it. List both kinds explicitly in
-    the generated plan so I can see which is which.
+    Rules:
+    - All autoscript records and launch points deploy with active: false.
+    - Include all launch points and autoscriptvars from each script's report.
+    - Order deployment by the priority tiers in SUMMARY_REPORT.md (Immediate first,
+      then Next release, then Planned).
     ```
 
 1. Provide your initials if requested by Bob and approve the plan creation. It may take a little while for the deployment plan to be fully generated. Provide input whenever needed.
@@ -274,39 +266,6 @@ Once the optimized scripts and their launch points have been deployed, we're rea
 For this, in Maximo Application Suite, navigate to **System Configuration → Platform Configuration → Automation Scripts**, open each script record, and use the **Test Script** button / dialog available in the UI. This allows you to simulate execution, supply runtime context or test records, and inspect the script's behavior and log output.
 
 Below are the test instructions and validation scenarios for each optimized script, derived from the optimization reports.
-
-#### COUNTRY_LOOKUP
-:::danger Error
-A stack trace is still thrown for this script
-:::
-
-* **Script Type:** Attribute Launch Point — `ADDRESS.ADDRESS5` — `VALIDATE` (JavaScript / Nashorn)
-* **Optimization Highlights:** Replaced `eval()` with safe `JSON.parse()`, moved external endpoint URL and credentials to system property `ext.country.api.url`, added error handling and `try/finally` cleanup on `MboSet` handles.
-
-**Testing Steps in Maximo UI:**
-
-1. In **System Configuration → Platform Configuration → System Properties**, verify that `ext.country.api.url` is defined and points to a valid HTTPS endpoint returning country JSON data.
-
-1. **Activate Script & Launch Point:** In **Automation Scripts**, open `COUNTRY_LOOKUP` and ensure both the script and its launch point (`COUNTRY_LOOKUP`) have the **Active** checkbox checked.
-
-1. Open the `COUNTRY_LOOKUP` script record and click the **Test Script** button.
-
-##### Scenario 1: Valid Country Code (Expected to succeed)
-   - Under **Launch Point**, select `COUNTRY_LOOKUP`.
-   - Select **Existing Object** and set **Object Path** to: `ADDRESS[addresscode='BEDFORDMAIN' and orgid='EAGLENA']`.
-   - In the **Set attribute values** table, click **Add Row** (+) and set `ADDRESS5` to `NL`.
-   - Click the **Test** button in the bottom bar.
-      **Expected Result:**
-         - The `VALIDATE` launch point fires, `service.httpget(apiUrl)` fetches the country list, `JSON.parse()` parses the response, and validation executes without error.
-         - In the **Process Log** (right pane), execution completes without exceptions.
-         - `<ADDRESS5 changed="1">NL</ADDRESS5>` appears in the **Data** pane.
-
-##### Scenario 2: Missing System Property
-   - In System Properties, temporarily clear `ext.country.api.url` and run **Live Refresh**.
-   - Re-run the test with the same object and `ADDRESS5 = NL`.
-   - **Expected Result:** The script catches `!apiUrl` and raises the controlled error `countrylookup/missingproperty` in the **Process Log**.
-   - Restore `ext.country.api.url` and run Live Refresh before proceeding.
-6. Set both the script and launch point to **Inactive** after testing.
 
 #### PO_NOLINES_CHECK
 
@@ -507,7 +466,7 @@ A stack trace is still thrown for this script
 #### ASSETNUM_VALIDATION
 
 * **Script Type:** Object Launch Point — `ASSET` — `SAVE` (On Add) (Jython)
-* **Optimization Highlights:** Replaced locale-dependent `mbo.getString("ASSETTYPE")` with the runtime implicit variable `assettype_internal`, which always holds the MAXVALUE regardless of locale, preventing silent `PREFIX_MAP` lookup failures in non-English environments.
+* **Optimization Highlights:** Replaced locale-dependent `mbo.getString("ASSETTYPE")` comparison against MAXVALUE literals with an explicit translator call — `MXServer.getMXServer().getMaximoDD().getTranslator().toInternalString("ASSETTYPE", mbo.getString("ASSETTYPE"))` — which converts the locale-dependent display value to the internal MAXVALUE before the `PREFIX_MAP` lookup. This prevents silent lookup failures in non-English environments without requiring any Variable binding configuration on the script record.
 
 **Testing Steps in Maximo UI:**
 
@@ -527,8 +486,8 @@ A stack trace is still thrown for this script
 1. Click the **Test** button in the bottom bar.
 
    **Expected Result:**
-      - `assettype_internal` resolves to `FLEET`; `PREFIX_MAP.get("FLEET")` returns `FL`.
-      - `"FL-001".startsWith("FL")` is `True` — `service.error` is **not** called.
+      - The translator converts the display value for `FLEET` to its internal MAXVALUE; `PREFIX_MAP.get("FLEET")` returns `FL`.
+      - `"FL-001".startswith("FL")` is `True` — `service.error` is **not** called.
       - In the **Process Log** (right pane), execution completes cleanly with no exception raised.
 
 ##### Scenario 2: Invalid Prefix Mismatch (Expected to be blocked)
@@ -538,14 +497,13 @@ A stack trace is still thrown for this script
 1. Click the **Test** button.
 
    **Expected Result:**
-      - `PREFIX_MAP.get("FACILITIES")` returns `FT`; `"PUMP-100".startsWith("FT")` is `False`.
+      - The translator converts the display value for `FACILITIES` to its MAXVALUE; `PREFIX_MAP.get("FACILITIES")` returns `FT`; `"PUMP-100".startswith("FT")` is `False`.
       - The script calls `service.error('asset', 'invalidassetprefix', ['FT'])`.
       - In the **Process Log**, the save transaction is blocked with a controlled Maximo exception:
          ```text
          asset#invalidassetprefix
          com.ibm.tivoli.maximo.script.ScriptService.error(ScriptService.java:481)
          ```
-      - The debug log entry reads: `Asset PUMP-100 failed prefix check for type FACILITIES`.
 
 ##### Scenario 3: Unmapped Asset Type (Expected to succeed)
 1. Update the attribute values:
@@ -555,7 +513,7 @@ A stack trace is still thrown for this script
 1. Click the **Test** button.
    
    **Expected Result:**
-      - `PREFIX_MAP.get("PRODUCTION")` returns `None` — the `if required_prefix is not None` guard is not entered.
+      - The translator returns the MAXVALUE for `PRODUCTION`; `PREFIX_MAP.get("PRODUCTION")` returns `None` — the `if required_prefix is not None` guard is not entered.
       - Execution completes without any error or validation block.
       - In the **Process Log**, no exception is raised and `service.error` is not called.
 
@@ -563,9 +521,9 @@ A stack trace is still thrown for this script
 1. If your Maximo environment supports user locale switching, set your user profile to a non-English locale (e.g. French or German) and repeat Scenario 2 from the **Automation Scripts** UI.
 
    **Expected Result:**
-      - The display label for `FACILITIES` may differ in the non-English locale, but `assettype_internal` still resolves to the underlying MAXVALUE `FACILITIES`.
+      - The display label shown for `FACILITIES` may differ in the non-English locale, but `toInternalString()` still returns the underlying MAXVALUE `FACILITIES` regardless of the user's locale.
       - The validation blocks the save identically — `PREFIX_MAP` lookup succeeds and `service.error` is raised.
-      - This confirms that replacing `mbo.getString("ASSETTYPE")` with `assettype_internal` eliminated the silent failure mode documented in issue A-01.
+      - This confirms that the translator call eliminates the silent failure mode documented in NULL-04: `mbo.getString()` alone returns the display value, which changes per locale; `toInternalString()` normalises it to the MAXVALUE before comparison.
 
 1. Set both the script and launch point to **Inactive** after testing.
 
@@ -628,3 +586,37 @@ A stack trace is still thrown for this script
       - Revert the source change after confirming the result.
 
 1. Set both the script and launch point to **Inactive** after testing.
+
+#### COUNTRY_LOOKUP
+:::danger Attention
+This script on purpose will still throw errors. 
+:::
+
+* **Script Type:** Attribute Launch Point — `ADDRESS.ADDRESS5` — `VALIDATE` (JavaScript / Nashorn)
+* **Optimization Highlights:** Replaced `eval()` with safe `JSON.parse()`, moved external endpoint URL and credentials to system property `ext.country.api.url`, added error handling and `try/finally` cleanup on `MboSet` handles.
+
+**Testing Steps in Maximo UI:**
+
+1. In **System Configuration → Platform Configuration → System Properties**, verify that `ext.country.api.url` is defined and points to a valid HTTPS endpoint returning country JSON data.
+
+1. **Activate Script & Launch Point:** In **Automation Scripts**, open `COUNTRY_LOOKUP` and ensure both the script and its launch point (`COUNTRY_LOOKUP`) have the **Active** checkbox checked.
+
+1. Open the `COUNTRY_LOOKUP` script record and click the **Test Script** button.
+
+##### Scenario 1: Valid Country Code (Expected to succeed)
+   - Under **Launch Point**, select `COUNTRY_LOOKUP`.
+   - Select **Existing Object** and set **Object Path** to: `ADDRESS[addresscode='BEDFORDMAIN' and orgid='EAGLENA']`.
+   - In the **Set attribute values** table, click **Add Row** (+) and set `ADDRESS5` to `NL`.
+   - Click the **Test** button in the bottom bar.
+      **Expected Result:**
+         - The `VALIDATE` launch point fires, `service.httpget(apiUrl)` fetches the country list, `JSON.parse()` parses the response, and validation executes without error.
+         - In the **Process Log** (right pane), execution completes without exceptions.
+         - `<ADDRESS5 changed="1">NL</ADDRESS5>` appears in the **Data** pane.
+
+##### Scenario 2: Missing System Property
+   - In System Properties, temporarily clear `ext.country.api.url` and run **Live Refresh**.
+   - Re-run the test with the same object and `ADDRESS5 = NL`.
+   - **Expected Result:** The script catches `!apiUrl` and raises the controlled error `countrylookup/missingproperty` in the **Process Log**.
+   - Restore `ext.country.api.url` and run Live Refresh before proceeding.
+6. Set both the script and launch point to **Inactive** after testing.
+
