@@ -264,10 +264,10 @@ Project-level config takes precedence when server names conflict.
 
 ### Challenge 6A — Open MCP settings via the UI
 
-1. In the Bob Chat Panel, click the **Settings gear icon** (⚙️).
-2. Select the **MCP** tab.
-3. Observe the two buttons: **Edit Global MCP** and **Edit Project MCP**.
-4. Click **Edit Project MCP**. Bob creates `.bob/mcp.json` if it does not yet exist and opens it in the Editor.
+1. Open **Bob Settings** (click the ⚙️ gear icon in the Bob sidebar, or run the **Bob: Open Settings** command).
+2. In the left navigation, select **MCP**.
+3. Observe the MCP servers table and the **+** button to add a new server.
+4. Click the **+** button, select the Configuration Scope and click the Open Configuration File button.
 
 ### Challenge 6B — Add a local MCP server entry
 
