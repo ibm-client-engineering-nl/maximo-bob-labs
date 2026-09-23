@@ -33,79 +33,61 @@ To use this skill, click [maximo_java_conversion.zip](/maximo/maximo_java_conver
 
 1. Create a new directory for your Bob workspace and open it in Bob.
 
-   ::::tabs
-   === Windows
-   ```powershell
+   ::: tabs key:MacOS/LinuxWindows
+   == Windows
+   ```
    New-Item -ItemType Directory -Force -Path C:\path\to\your\bob\workspace
    Set-Location C:\path\to\your\bob\workspace
    ```
-   === MacOS
-   ```bash
+   == MacOS / Linux
+   ```
    mkdir -p /path/to/your/bob/workspace
    cd /path/to/your/bob/workspace
    ```
-   === Linux
-   ```bash
-   mkdir -p /path/to/your/bob/workspace
-   cd /path/to/your/bob/workspace
-   ```
-   ::::
+   :::
 
 1. Click the [download](/maximo/maximo-code-optimization.zip) link in the section above to download the desired skill(s). Next, extract the ZIP archive(s) into your Bob workspace skills directory. For this, change directory to your workspace.
 
-   ::::tabs
-   === Windows
-   ```powershell
+   ::: tabs key:MacOS/LinuxWindows
+   == Windows
+   ```
    Set-Location C:\path\to\your\bob\workspace
    ```
-   === MacOS
+   == MacOS / Linux
    ```bash
    cd /path/to/your/bob/workspace
    ```
-   === Linux
-   ```bash
-   cd /path/to/your/bob/workspace
-   ```
-   ::::
+   :::
 
 1. Next, unzip the downloaded skills into your workspace.
 
-   ::::tabs
-   === Windows
-   ```powershell
+   ::: tabs key:MacOS/LinuxWindows
+   == Windows
+   ```
    Expand-Archive -Path C:\path\to\downloaded-zip-archive\maximo-code-optimization.zip -DestinationPath . -Force
    Expand-Archive -Path C:\path\to\downloaded-zip-archive\maximo_java_conversion.zip -DestinationPath . -Force
    ```
-   === MacOS
-   ```bash
+   == MacOS / Linux
+   ```
    unzip /path/to/downloaded-zip-archive/maximo-code-optimization.zip
    unzip /path/to/downloaded-zip-archive/maximo_java_conversion.zip
    ```
-   === Linux
-   ```bash
-   unzip /path/to/downloaded-zip-archive/maximo-code-optimization.zip
-   unzip /path/to/downloaded-zip-archive/maximo_java_conversion.zip
-   ```
-   ::::
+   :::
 
 #### Verify Installation
 
 1. Check that the skill files are present:
 
-   ::::tabs
-   === Windows
-   ```powershell
+   ::: tabs key:MacOS/LinuxWindows
+   == Windows
+   ```
    Get-ChildItem -Recurse -Force .bob/skills
    ```
-   === MacOS
-   ```bash
+   == MacOS / Linux
+   ```
    ls -lRa .bob/skills/
    ```
-   === Linux
-   ```bash
-   ls -lRa .bob/skills/
-   ```
-   ::::
+   :::
 
 ### Understand the Optimization Skill
 ---
@@ -667,4 +649,3 @@ This script on purpose will still throw errors.
    - **Expected Result:** The script catches `!apiUrl` and raises the controlled error `countrylookup/missingproperty` in the **Process Log**.
    - Restore `ext.country.api.url` and run Live Refresh before proceeding.
 6. Set both the script and launch point to **Inactive** after testing.
-
