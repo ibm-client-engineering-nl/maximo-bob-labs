@@ -104,27 +104,45 @@ To use this skill, click [maximo_java_conversion.zip](/maximo/maximo_java_conver
 
    ::: info What It Does
 
-   The skill transforms Bob into an expert Maximo automation script optimizer. It can fetch scripts directly from a live Maximo environment via REST API, analyze them for issues, rewrite them with fixes, and produce detailed reports — all in a structured, interactive workflow.
+   The **Maximo Code Optimization** skill is an expert tool designed to fetch, analyze, secure, and optimize IBM Maximo automation scripts (Jython/Python and JavaScript/Nashorn) according to enterprise best practices and Maximo framework standards.
 
-   **The 5-Phase Workflow**
+   ---
 
-   | Phase | What Happens |
-   |---|---|
-   | **1 – Setup** | Creates a `maximo-scripts/` project structure, asks for your Maximo URL and API key, stores credentials in a `.env` file (`MAXIMO_URL`, `MAXIMO_API_KEY`), and installs Python dependencies (`requests`, `python-dotenv`, `urllib3`) into an isolated virtual environment. |
-   | **2 – Fetching** | Runs `fetch_maximo_scripts.py` against the Maximo REST endpoint `MXAPIAUTOSCRIPT`. Scripts are saved to `original/` with their exact Maximo names (e.g., `OSACTION.MXAPIINSPRESULT.CREATEWO.py`). |
-   | **3 – Analysis** | Each script is inspected across 4 severity levels: **Critical**, **High**, **Medium**, and **Low**. |
-   | **4 – Optimization** | Fixed versions are written to `optimized/` using the exact same filenames. |
-   | **5 – Reporting** | Individual `{SCRIPTNAME}_report.md` files and a `SUMMARY_REPORT.md` are generated in `reports/`. |
+   **1. The 5-Phase Optimization Workflow**
 
-   **What Gets Optimized**
+   The skill executes a structured, 5-phase end-to-end workflow:
 
-   The skill targets **5 core capability areas**:
+   1. **Phase 1: Environment Setup**
+      - Creates a clean workspace structure (`maximo-scripts/` with `original/`, `optimized/`, `reports/`, and `tools/`).
+      - Collects Maximo server credentials securely in `maximo-scripts/.env` and sets up an isolated Python virtual environment.
+   2. **Phase 2: Script Fetching**
+      - Automatically queries the Maximo REST API (`/maximo/api/os/MXAPIAUTOSCRIPT`) to fetch active/all automation scripts and stores them in `maximo-scripts/original/` preserving exact names and extensions (`.py` or `.js`).
+   3. **Phase 3: Script Analysis & Issue Tallying**
+      - Evaluates each script against a deterministic catalog of deterministic rules with strict severity levels (Critical, High, Medium, Low).
+      - Produces an authoritative **Pre-Optimization Issue Tally** checkpoint reconciling all findings across scripts before making code changes.
+   4. **Phase 4: Optimization**
+      - Writes rewritten scripts into `maximo-scripts/optimized/` using the exact same filenames.
+      - Applies mandatory pattern fixes (parameterized queries, proper resource cleanup in `finally` blocks, `MXLoggerFactory` loggers, null guards, etc.).
+      - Generates any necessary deployment helper scripts (e.g. creating/migrating Attribute launch points).
+   5. **Phase 5: Reporting & Reconciliation**
+      - Produces individual markdown audit reports (`{SCRIPTNAME}_report.md`) with diffs, findings, and deployment instructions.
+      - Compiles a reconciled master `SUMMARY_REPORT.md` ledger.
 
-   - **Security** — SQL injection prevention, input validation, JSON/XML injection guards
-   - **Error Handling & Logging** — `try/catch/finally` blocks, `MXLoggerFactory` logging
-   - **Resource Management** — `MboSet` lifecycle management, connection and memory leak prevention
-   - **Performance** — optimized `WHERE` clauses, reduced iterations, fewer redundant DB calls
-   - **Code Quality** — null safety checks, dead code removal, improved comments and formatting
+   ---
+
+   **2. What Exactly Gets Optimized?**
+
+   The skill scans and remediates issues across 7 core areas:
+
+   | Category | Specific Issues Detected & Remediated | Rule Examples |
+   | :--- | :--- | :--- |
+   | **Security** | • **SQL Injection**: String-concatenated `.setWhere()` queries replaced with parameterized `SqlFormat`.<br>• **Hardcoded Secrets**: Plaintext credentials/URLs extracted to `MXServer.getProperty()` calls.<br>• **Dynamic Code Execution**: Unsafe `eval()` replaced with secure parsing. | `SEC-01`, `SEC-02`, `SEC-03` |
+   | **Resource Management & Memory** | • **MboSet Leaks**: Unclosed `MXServer.getMXServer().getMboSet()` sets wrapped in `try/finally` blocks with explicit `.cleanup()` calls to prevent out-of-memory crashes. | `RES-01`, `RES-02` |
+   | **Performance** | • **Redundant Queries**: Multiple `.count()` / `.size()` calls cached locally.<br>• **Object Init Launch Points**: Inefficient Object Init scripts migrated to Attribute Init launch points. | `PERF-01`, `PERF-02` |
+   | **Null Safety & Robustness** | • **Null Pointers**: Unguarded method access on potentially empty `.getMbo(0)` results or object-returning getters.<br>• **Synonym Domain Translation**: Replaces locale-dependent `getString()` checks with `MXServer...getTranslator().toInternalString()`. | `NULL-01`, `NULL-02`, `NULL-04` |
+   | **API & Engine Compatibility** | • **Rhino/Nashorn/GraalJS**: Deprecated `importPackage` replaced with `Java.type()`.<br>• **Deprecated Invocations**: Legacy `HashMap` argument passing updated to function-based `service.invokeScript(name, fnName, args)`. | `API-01`, `API-02` |
+   | **Error Handling & Logging** | • **Logging**: Replaces bare `print` or `service.log()` with standard `MXLoggerFactory.getLogger("maximo.script.<SCRIPTNAME>")`.<br>• **Network Resilience**: External HTTP calls wrapped in structured `try/catch` handlers.<br>• **Legacy Flags**: Deprecated `errorgroup`/`errorkey` assignments migrated to `service.error()`. | `SYN-01`, `LOG-01`, `ERR-01`, `ERR-02` |
+   | **Architecture & Bindings** | • **Variable Bindings**: Corrects multi-row aggregation attempts on single-row `IN` bindings by replacing them with proper `MboSet` traversal.<br>• **Publish Channels**: Recommends Event Filters over outbound User Exits where appropriate. | `BIND-01`, `ARCH-01` |
 
    **Output Structure**
 
@@ -143,7 +161,7 @@ To use this skill, click [maximo_java_conversion.zip](/maximo/maximo_java_conver
    Each report includes issue locations with line numbers, before/after code comparisons, impact explanations, testing recommendations, and a deployment checklist.
    :::
 
-1. Next, repeat this exercise for the Maximo Java Conversion skill.
+1. Repeat this exercise for the Maximo Java Conversion skill.
 
 Asking IBM Bob to explain a skill before you use it is a great way to quickly understand its capabilities and limitations, so you can craft better prompts and get more accurate, reliable results from the start.
 
@@ -162,7 +180,7 @@ After the workflow completes, review the generated reports as well as the optimz
 
 1. In IBM Bob, click the mode selector and switch to **Agent** mode.
 
-1. Next, enter the following prompt:
+1. Next, start a new task in Bob and enter the following prompt:
 
     ```
     Optimize my automation scripts
@@ -236,7 +254,7 @@ With the reports reviewed and the optimized scripts validated, it's time to depl
 
 1. In Bob, click the mode selector and switch to **Plan** mode.
 
-1. Copy and paste the following prompt into the chat and submit it:
+1. Next, start a new task in Bob and enter the following prompt into the chat:
 
     ```
     Create a deployment plan for the optimized scripts in maximo-scripts/. Ask for my
