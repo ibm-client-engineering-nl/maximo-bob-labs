@@ -24,14 +24,14 @@ Bob IDE has an **Integrated Terminal** built in. Use it now to create the lab fo
 1. Open the Integrated Terminal inside Bob IDE with the keyboard shortcut **Ctrl + `` ` ``** (backtick) on all platforms, or via the menu **View → Terminal**.
 2. In the terminal panel that opens at the bottom of the IDE, run the appropriate command for your platform:
 
-::: tabs key:macOS/LinuxWindows
-== macOS / Linux
-```
-mkdir -p ~/bob-scavenger-hunt
-```
+::: tabs key:MacOS/LinuxWindows
 == Windows
 ```
 New-Item -ItemType Directory -Force -Path "$HOME\bob-scavenger-hunt"
+```
+== MacOS / Linux
+```
+mkdir -p ~/bob-scavenger-hunt
 ```
 :::
 
@@ -178,16 +178,16 @@ Bob stores all project-level configuration in a `.bob` folder at the root of you
 1. Open the Integrated Terminal with **Ctrl + `` ` ``** or via the menu **View → Terminal**.
 2. In the terminal panel, run the appropriate command for your platform:
 
-::: tabs key:macOS/LinuxWindows
-== macOS / Linux
-```
-mkdir -p .bob/rules .bob/rules-doc-writer .bob/skills/hello-skill
-```
+::: tabs key:MacOS/LinuxWindows
 == Windows
 ```
 New-Item -ItemType Directory -Force -Path .bob/rules
 New-Item -ItemType Directory -Force -Path .bob/rules-doc-writer
 New-Item -ItemType Directory -Force -Path .bob/skills/hello-skill
+```
+== MacOS / Linux
+```
+mkdir -p .bob/rules .bob/rules-doc-writer .bob/skills/hello-skill
 ```
 :::
 
@@ -197,14 +197,14 @@ New-Item -ItemType Directory -Force -Path .bob/skills/hello-skill
 
 Still in the Integrated Terminal, create the skill placeholder file you will flesh out in Clue 8:
 
-::: tabs key:macOS/LinuxWindows
-== macOS / Linux
-```
-echo "# My First Skill" > .bob/skills/hello-skill/SKILL.md
-```
+::: tabs key:MacOS/LinuxWindows
 == Windows
 ```
 "# My First Skill" | Out-File -FilePath .bob/skills/hello-skill/SKILL.md -Encoding utf8
+```
+== MacOS / Linux
+```
+echo "# My First Skill" > .bob/skills/hello-skill/SKILL.md
 ```
 :::
 
@@ -352,20 +352,7 @@ customModes:
 
 Alternatively, you can create this file directly from the **IDE's Integrated Terminal** (**Ctrl + `` ` ``**):
 
-::: tabs key:macOS/LinuxWindows
-== macOS / Linux
-```
-cat > .bob/custom_modes.yaml << 'EOF'
-customModes:
-  - slug: doc-writer
-    name: "📝 Doc Writer"
-    roleDefinition: You are a technical writer. You write clear, concise documentation.
-    whenToUse: Use this mode for writing and reviewing Markdown documentation.
-    groups:
-      - read
-      - edit
-EOF
-```
+::: tabs key:MacOS/LinuxWindows
 == Windows
 ```
 @'
@@ -378,6 +365,19 @@ customModes:
       - read
       - edit
 '@ | Out-File -FilePath .bob/custom_modes.yaml -Encoding utf8
+```
+== MacOS / Linux
+```
+cat > .bob/custom_modes.yaml << 'EOF'
+customModes:
+  - slug: doc-writer
+    name: "📝 Doc Writer"
+    roleDefinition: You are a technical writer. You write clear, concise documentation.
+    whenToUse: Use this mode for writing and reviewing Markdown documentation.
+    groups:
+      - read
+      - edit
+EOF
 ```
 :::
 
@@ -444,26 +444,7 @@ Save the file.
 
 Alternatively, write this from the **IDE's Integrated Terminal** (**Ctrl + `` ` ``**):
 
-::: tabs key:macOS/LinuxWindows
-== macOS / Linux
-```
-cat > .bob/skills/hello-skill/SKILL.md << 'EOF'
----
-name: hello-skill
-description: Greet the user warmly and introduce the IBM Bob IDE features when asked for a welcome message.
----
-
-When activated, greet the user with a friendly welcome message.
-Include a brief, one-sentence description of these five IBM Bob IDE features:
-1. Explorer
-2. Editor
-3. Bob Chat Panel
-4. Integrated Terminal
-5. Mode Selector
-
-Keep the entire response under 150 words. Use a friendly, encouraging tone.
-EOF
-```
+::: tabs key:MacOS/LinuxWindows
 == Windows
 ```
 @'
@@ -482,6 +463,25 @@ Include a brief, one-sentence description of these five IBM Bob IDE features:
 
 Keep the entire response under 150 words. Use a friendly, encouraging tone.
 '@ | Out-File -FilePath .bob/skills/hello-skill/SKILL.md -Encoding utf8
+```
+== MacOS / Linux
+```
+cat > .bob/skills/hello-skill/SKILL.md << 'EOF'
+---
+name: hello-skill
+description: Greet the user warmly and introduce the IBM Bob IDE features when asked for a welcome message.
+---
+
+When activated, greet the user with a friendly welcome message.
+Include a brief, one-sentence description of these five IBM Bob IDE features:
+1. Explorer
+2. Editor
+3. Bob Chat Panel
+4. Integrated Terminal
+5. Mode Selector
+
+Keep the entire response under 150 words. Use a friendly, encouraging tone.
+EOF
 ```
 :::
 
@@ -519,18 +519,7 @@ Files inside the rules directory are loaded alphabetically and combined. Support
 
 Create a rules file that applies to all modes in this project. Run the following in the **IDE's Integrated Terminal** (**Ctrl + `` ` ``**):
 
-::: tabs key:macOS/LinuxWindows
-== macOS / Linux
-```
-cat > .bob/rules/project-rules.md << 'EOF'
-# Project Rules
-
-- Always respond in English.
-- When suggesting file paths, use forward slashes even on Windows.
-- Keep all code examples minimal — include only what is necessary to illustrate the point.
-- When you are unsure about a requirement, ask a clarifying question before proceeding.
-EOF
-```
+::: tabs key:MacOS/LinuxWindows
 == Windows
 ```
 @'
@@ -542,24 +531,24 @@ EOF
 - When you are unsure about a requirement, ask a clarifying question before proceeding.
 '@ | Out-File -FilePath .bob/rules/project-rules.md -Encoding utf8
 ```
+== MacOS / Linux
+```
+cat > .bob/rules/project-rules.md << 'EOF'
+# Project Rules
+
+- Always respond in English.
+- When suggesting file paths, use forward slashes even on Windows.
+- Keep all code examples minimal — include only what is necessary to illustrate the point.
+- When you are unsure about a requirement, ask a clarifying question before proceeding.
+EOF
+```
 :::
 
 ### Challenge 9B — Create a mode-specific rules file
 
 Now add rules that apply **only** when Bob is in your custom `doc-writer` mode. Run the following in the **IDE's Integrated Terminal** (**Ctrl + `` ` ``**):
 
-::: tabs key:macOS/LinuxWindows
-== macOS / Linux
-```
-cat > .bob/rules-doc-writer/01-style.md << 'EOF'
-# Doc Writer Style Rules
-
-- Always use sentence case for headings (not Title Case).
-- Use second-person ("you") throughout.
-- Avoid jargon; define technical terms on first use.
-- Every code example must have a one-line comment explaining what it does.
-EOF
-```
+::: tabs key:MacOS/LinuxWindows
 == Windows
 ```
 @'
@@ -570,6 +559,17 @@ EOF
 - Avoid jargon; define technical terms on first use.
 - Every code example must have a one-line comment explaining what it does.
 '@ | Out-File -FilePath .bob/rules-doc-writer/01-style.md -Encoding utf8
+```
+== MacOS / Linux
+```
+cat > .bob/rules-doc-writer/01-style.md << 'EOF'
+# Doc Writer Style Rules
+
+- Always use sentence case for headings (not Title Case).
+- Use second-person ("you") throughout.
+- Avoid jargon; define technical terms on first use.
+- Every code example must have a one-line comment explaining what it does.
+EOF
 ```
 :::
 
@@ -591,14 +591,14 @@ Summarise the rules you are currently following for this project.
 
 In the **IDE's Integrated Terminal** (**Ctrl + `` ` ``**), run the following command to confirm your full `.bob` folder structure is in place:
 
-::: tabs key:macOS/LinuxWindows
-== macOS / Linux
-```
-find .bob -type f | sort
-```
+::: tabs key:MacOS/LinuxWindows
 == Windows
 ```
 Get-ChildItem -Recurse -File .bob | Select-Object -ExpandProperty FullName | Sort-Object
+```
+== MacOS / Linux
+```
+find .bob -type f | sort
 ```
 :::
 
