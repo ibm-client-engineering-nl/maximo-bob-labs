@@ -33,31 +33,79 @@ To use this skill, click [maximo_java_conversion.zip](/maximo/maximo_java_conver
 
 1. Create a new directory for your Bob workspace and open it in Bob.
 
+   ::::tabs
+   === Windows
+   ```powershell
+   New-Item -ItemType Directory -Force -Path C:\path\to\your\bob\workspace
+   Set-Location C:\path\to\your\bob\workspace
+   ```
+   === MacOS
    ```bash
    mkdir -p /path/to/your/bob/workspace
    cd /path/to/your/bob/workspace
    ```
+   === Linux
+   ```bash
+   mkdir -p /path/to/your/bob/workspace
+   cd /path/to/your/bob/workspace
+   ```
+   ::::
 
 1. Click the [download](/maximo/maximo-code-optimization.zip) link in the section above to download the desired skill(s). Next, extract the ZIP archive(s) into your Bob workspace skills directory. For this, change directory to your workspace.
 
+   ::::tabs
+   === Windows
+   ```powershell
+   Set-Location C:\path\to\your\bob\workspace
+   ```
+   === MacOS
    ```bash
    cd /path/to/your/bob/workspace
    ```
+   === Linux
+   ```bash
+   cd /path/to/your/bob/workspace
+   ```
+   ::::
 
 1. Next, unzip the downloaded skills into your workspace.
 
+   ::::tabs
+   === Windows
+   ```powershell
+   Expand-Archive -Path C:\path\to\downloaded-zip-archive\maximo-code-optimization.zip -DestinationPath . -Force
+   Expand-Archive -Path C:\path\to\downloaded-zip-archive\maximo_java_conversion.zip -DestinationPath . -Force
+   ```
+   === MacOS
    ```bash
    unzip /path/to/downloaded-zip-archive/maximo-code-optimization.zip
    unzip /path/to/downloaded-zip-archive/maximo_java_conversion.zip
    ```
+   === Linux
+   ```bash
+   unzip /path/to/downloaded-zip-archive/maximo-code-optimization.zip
+   unzip /path/to/downloaded-zip-archive/maximo_java_conversion.zip
+   ```
+   ::::
 
 #### Verify Installation
 
 1. Check that the skill files are present:
 
+   ::::tabs
+   === Windows
+   ```powershell
+   Get-ChildItem -Recurse -Force .bob/skills
+   ```
+   === MacOS
    ```bash
    ls -lRa .bob/skills/
    ```
+   === Linux
+   ```bash
+   ls -lRa .bob/skills/
+   ```
+   ::::
 
 ### Understand the Optimization Skill
 ---
@@ -322,14 +370,14 @@ Below are the test instructions and validation scenarios for each optimized scri
 
 **Testing Steps in Maximo UI:**
 
-1. **Activate Script & Launch Point:** In **System Configuration → Platform Configuration → Automation Scripts**, open `SET_REPLCOST` and ensure both the script and its launch point (`SET_REPLCOST`) have the **Active** checkbox checked.
+1. Activate Script & Launch Point: In **System Configuration → Platform Configuration → Automation Scripts**, open `SET_REPLCOST` and ensure both the script and its launch point (`SET_REPLCOST`) have the **Active** checkbox checked.
 
 1. Open the `SET_REPLCOST` script record and click the **Test Script** button.
 
 ##### Scenario 1: Valid Purchase Price Calculation (50% rule)
 1. Under **Launch Point**, select `SET_REPLCOST`.
 
-1. Select **New Object** (or **Existing Object** e.g. `ASSET[assetnum='11400' and siteid='BEDFORD']`).
+1. Select **New Object** (or **Existing Object** e.g. `ASSET[assetnum='11400']`).
 
 1. In **Object Path**, enter: `ASSET`.
 
