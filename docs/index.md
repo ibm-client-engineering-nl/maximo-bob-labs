@@ -13,7 +13,7 @@ hero:
 
 features:
   - title: IBM Bob Fundamentals
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+    details: Intro lab on IBM Bob
   - title: Maximo Script Modernization
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+    details: Lab on optimizing Maximo automation scripts
 
