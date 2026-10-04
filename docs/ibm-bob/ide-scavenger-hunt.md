@@ -56,7 +56,7 @@ Click the **Manage** link, in the window that pops up click the **Trust** button
 
 ### Permissions
 
-With the workspace open, check the **Permissions**. You find a drop-down at the bottom of the Bob chat input. You should see **"Read"** permission is auto-approved. Bob asks will prompt for approval for the other permissions, for the lab leave the settings as is.
+With the workspace open, check the **Permissions**. You find a drop-down at the bottom of the Bob chat input. You should see **"Read"** permission is auto-approved. Bob will prompt for approval for the other permissions, for the lab leave the settings as is.
 
 ✅ **Checkpoint:** The Explorer panel shows the `bob-scavenger-hunt` folder as the workspace root, the title bar reflects the folder name, and auto-approval is only enabled for the **Read** permission.
 
@@ -91,19 +91,20 @@ The **Editor** is the main central pane. Files you click in the Explorer open as
 
 1. Copy the following content and paste it into the Editor tab named `scavenger-notes.md`:
 
-```markdown
-# Scavenger Hunt Progress
-
-- [x] Explorer — found it!
-- [ ] Editor
-- [ ] Bob Chat Panel
-- [ ] Integrated Terminal
-- [ ] Mode Selector
-- [ ] MCP Servers
-- [ ] Modes
-- [ ] Skills
-- [ ] Rules
-```
+    ```markdown
+    # Scavenger Hunt Progress
+    
+    - [x] Explorer — found it!
+    - [ ] Editor
+    - [ ] Bob Chat Panel
+    - [ ] Mode Selector
+    - [ ] Integrated Terminal
+    - [ ] Modes
+    - [ ] Rules
+    - [ ] Skills
+    - [ ] Context Window
+    - [ ] MCP Servers
+    ```
 
 1. Save the file with **Cmd + S** (macOS) or **Ctrl + S** (Windows/Linux).
 
@@ -161,7 +162,41 @@ Open scavenger-notes.md and mark the "Editor" and "Bob Chat Panel" items as comp
 
 ✅ **Checkpoint:** In the chat panel you have a conversation history. `scavenger-notes.md` now shows `[x]` next to both **Editor** and **Bob Chat Panel**.
 
-## 🖥️ Clue 4 — The Engine Room (Integrated Terminal)
+## 🎭 Clue 4 — The Costume Room (Mode Selector)
+
+> *"Every actor needs a costume. Find the control beside the chat input that changes Bob's role."*
+
+### Background
+
+Bob operates in **modes**, each with a defined set of permissions and a specific role. The **Mode Selector** is the dropdown to the **left of the chat input field**. Built-in modes include:
+
+| Mode  | What Bob can do |
+|-------|----------------|
+| **Agent** | Read, write, run commands, use MCP — the most capable mode |
+| **Ask**   | Read files only — safe for exploring code |
+| **Plan**  | Read and plan — no writes or commands |
+
+You can also switch modes with the keyboard shortcut **Cmd + .** (macOS) / **Ctrl + .** (Windows/Linux).
+
+### Challenge 4A — Explore the mode selector
+
+1. Look at the bottom of the Bob Chat Panel. To the left of the text input field you will see a dropdown showing the current mode (e.g. **Agent**).
+2. Click the dropdown and switch to **Ask** mode.
+3. In the chat input, type:
+
+```
+What is the purpose of the .bob folder?
+```
+
+4. Press **Enter** and read the response. Notice that in Ask mode Bob can answer questions and read files, but will not make changes.
+
+### Challenge 4B — Switch back to Agent mode
+
+1. Click the mode selector dropdown again and switch back to **Agent** mode.
+
+✅ **Checkpoint:** You have successfully switched between Ask mode and Agent mode using the mode selector dropdown. The current mode shown in the selector is **Agent**.
+
+## 🖥️ Clue 5 — The Engine Room (Integrated Terminal)
 
 > *"Deep below the deck lies the engine room — a place where commands are issued and the real work happens."*
 
@@ -171,7 +206,7 @@ The **Integrated Terminal** runs a full shell session inside Bob IDE — the sam
 
 Throughout this lab every shell command is run here — you never need to leave the IDE.
 
-### Challenge 4A — Scaffold the project configuration folders
+### Challenge 5A — Scaffold the project configuration folders
 
 Bob stores all project-level configuration in a `.bob` folder at the root of your workspace. Use the Integrated Terminal to create the full structure now — several later clues depend on it.
 
@@ -193,7 +228,7 @@ mkdir -p .bob/rules .bob/rules-doc-writer .bob/skills/hello-skill
 
 3. Switch to the Explorer panel and confirm the new `.bob` folder tree is visible.
 
-### Challenge 4B — Create a placeholder file from the terminal
+### Challenge 5B — Create a placeholder file from the terminal
 
 Still in the Integrated Terminal, create the skill placeholder file you will flesh out in Clue 8:
 
@@ -212,93 +247,7 @@ echo "# My First Skill" > .bob/skills/hello-skill/SKILL.md
 
 ✅ **Checkpoint:** The Integrated Terminal is open, the `.bob` directory tree exists with `rules/`, `rules-doc-writer/`, and `skills/hello-skill/` subdirectories, and `SKILL.md` exists at `.bob/skills/hello-skill/SKILL.md`.
 
-## 🎭 Clue 5 — The Costume Room (Mode Selector)
-
-> *"Every actor needs a costume. Find the control beside the chat input that changes Bob's role."*
-
-### Background
-
-Bob operates in **modes**, each with a defined set of permissions and a specific role. The **Mode Selector** is the dropdown to the **left of the chat input field**. Built-in modes include:
-
-| Mode  | What Bob can do |
-|-------|----------------|
-| **Agent** | Read, write, run commands, use MCP — the most capable mode |
-| **Ask**   | Read files only — safe for exploring code |
-| **Plan**  | Read and plan — no writes or commands |
-
-You can also switch modes with the keyboard shortcut **Cmd + .** (macOS) / **Ctrl + .** (Windows/Linux).
-
-### Challenge 5A — Explore the mode selector
-
-1. Look at the bottom of the Bob Chat Panel. To the left of the text input field you will see a dropdown showing the current mode (e.g. **Agent**).
-2. Click the dropdown and switch to **Ask** mode.
-3. In the chat input, type:
-
-```
-What is the purpose of the .bob folder?
-```
-
-4. Press **Enter** and read the response. Notice that in Ask mode Bob can answer questions and read files, but will not make changes.
-
-### Challenge 5B — Switch back to Agent mode
-
-1. Click the mode selector dropdown again and switch back to **Agent** mode.
-
-✅ **Checkpoint:** You have successfully switched between Ask mode and Agent mode using the mode selector dropdown. The current mode shown in the selector is **Agent**.
-
-## 🔌 Clue 6 — The Power Sockets (MCP Servers)
-
-> *"The IDE has power sockets that let you plug in external tools. Find where to manage them."*
-
-### Background
-
-**Model Context Protocol (MCP)** lets you connect external tools and services to Bob. Bob discovers available tools, calls them on your behalf, and uses the results to answer your questions or complete tasks.
-
-MCP configuration is stored in JSON files at two levels:
-
-| Level   | File location                 | Scope             |
-|---------|-------------------------------|-------------------|
-| Global  | `~/.bob/mcp.json`             | All workspaces    |
-| Project | `.bob/mcp.json` in project root | This workspace only |
-
-Project-level config takes precedence when server names conflict.
-
-### Challenge 6A — Open MCP settings via the UI
-
-1. Open **Bob Settings** (click the ⚙️ gear icon in the Bob sidebar, or run the **Bob: Open Settings** command).
-2. In the left navigation, select **MCP**.
-3. Observe the MCP servers table and the **+** button to add a new server.
-4. Click the **+** button, select the Configuration Scope and click the Open Configuration File button.
-
-### Challenge 6B — Add a local MCP server entry
-
-In the `.bob/mcp.json` file that just opened in your Editor, replace the entire contents with the following configuration. This registers a placeholder STDIO server — you will not start it, but configuring the entry teaches you the format.
-
-```json
-{
-  "mcpServers": {
-    "my-local-tools": {
-      "command": "node",
-      "args": ["tools/server.js"],
-      "disabled": true,
-      "env": {}
-    }
-  }
-}
-```
-
-> **Note:** `"disabled": true` prevents Bob from trying to start the server, so no Node.js process is launched. This is intentional for the purposes of this exercise.
-
-Save the file with **Cmd + S** (macOS) or **Ctrl + S** (Windows/Linux).
-
-### Challenge 6C — Verify the configuration
-
-1. Go back to **Settings → MCP** in the Bob panel.
-2. You should see `my-local-tools` listed as a server entry with a **disabled** status.
-
-✅ **Checkpoint:** `.bob/mcp.json` exists in your project, contains the `my-local-tools` server entry, and the MCP tab in Settings shows the server (marked disabled).
-
-## 🎨 Clue 7 — The Wardrobe Designer (Modes)
+## 🎨 Clue 6 — The Wardrobe Designer (Modes)
 
 > *"You discovered the costume room. Now find where costumes are designed and saved."*
 
@@ -313,7 +262,7 @@ You can create **custom modes** to give Bob a specialized role, restrict its too
 
 You can create modes through the **Settings → Modes** UI or by editing the YAML file directly.
 
-### Challenge 7A — Create a custom mode via the UI
+### Challenge 6A — Create a custom mode via the UI
 
 1. Click the **gear icon** (⚙️) inside the **Mode Selector** dropdown (next to the mode name), or go to **Settings → Modes**.
 2. Click the **+** (Add) icon to create a new mode.
@@ -332,7 +281,7 @@ You can create modes through the **Settings → Modes** UI or by editing the YAM
 
 Bob creates (or updates) `.bob/custom_modes.yaml` with your new mode.
 
-### Challenge 7B — Inspect the generated YAML
+### Challenge 6B — Inspect the generated YAML
 
 1. In the Explorer, open `.bob/custom_modes.yaml`.
 2. Verify it contains a `customModes` array with your `doc-writer` entry.
@@ -381,7 +330,7 @@ EOF
 ```
 :::
 
-### Challenge 7C — Use your custom mode
+### Challenge 6C — Use your custom mode
 
 1. Click the mode selector dropdown at the bottom of the Chat Panel.
 2. Confirm **📝 Doc Writer** appears in the list.
@@ -395,6 +344,94 @@ What kind of tasks are you best suited for?
 5. Switch back to **Agent** mode when done.
 
 ✅ **Checkpoint:** `.bob/custom_modes.yaml` exists, the mode selector shows **📝 Doc Writer**, and Bob responded in character when you asked it about its purpose.
+
+## 📋 Clue 7 — The Standing Orders (Rules)
+
+> *"Every crew operates under standing orders. Find where you leave persistent instructions that Bob always follows."*
+
+### Background
+
+**Rules** are persistent instructions that Bob applies to every conversation in a given scope. They are stored as plain text or Markdown files:
+
+| Location                          | Applies to                              |
+|-----------------------------------|-----------------------------------------|
+| `.bob/rules/`                     | All modes in this project               |
+| `.bob/rules-{mode-slug}/`         | A specific mode in this project         |
+| `~/.bob/rules/`                   | All modes globally (all workspaces)     |
+
+Files inside the rules directory are loaded alphabetically and combined. Supported file extensions: `.md`, `.txt`.
+
+### Challenge 7A — Create a project-wide rules file
+
+Create a rules file that applies to all modes in this project. Run the following in the **IDE's Integrated Terminal** (**Ctrl + `` ` ``**):
+
+::: tabs key:MacOS/LinuxWindows
+== Windows
+```
+@'
+# Project Rules
+
+- Always respond in English.
+- When suggesting file paths, use forward slashes even on Windows.
+- Keep all code examples minimal — include only what is necessary to illustrate the point.
+- When you are unsure about a requirement, ask a clarifying question before proceeding.
+'@ | Out-File -FilePath .bob/rules/project-rules.md -Encoding utf8
+```
+== MacOS / Linux
+```
+cat > .bob/rules/project-rules.md << 'EOF'
+# Project Rules
+
+- Always respond in English.
+- When suggesting file paths, use forward slashes even on Windows.
+- Keep all code examples minimal — include only what is necessary to illustrate the point.
+- When you are unsure about a requirement, ask a clarifying question before proceeding.
+EOF
+```
+:::
+
+### Challenge 7B — Create a mode-specific rules file
+
+Now add rules that apply **only** when Bob is in your custom `doc-writer` mode. Run the following in the **IDE's Integrated Terminal** (**Ctrl + `` ` ``**):
+
+::: tabs key:MacOS/LinuxWindows
+== Windows
+```
+@'
+# Doc Writer Style Rules
+
+- Always use sentence case for headings (not Title Case).
+- Use second-person ("you") throughout.
+- Avoid jargon; define technical terms on first use.
+- Every code example must have a one-line comment explaining what it does.
+'@ | Out-File -FilePath .bob/rules-doc-writer/01-style.md -Encoding utf8
+```
+== MacOS / Linux
+```
+cat > .bob/rules-doc-writer/01-style.md << 'EOF'
+# Doc Writer Style Rules
+
+- Always use sentence case for headings (not Title Case).
+- Use second-person ("you") throughout.
+- Avoid jargon; define technical terms on first use.
+- Every code example must have a one-line comment explaining what it does.
+EOF
+```
+:::
+
+### Challenge 7C — Verify rules are loaded
+
+1. Switch to **Agent** mode in the mode selector.
+2. Start a new chat and ask:
+
+```
+Summarise the rules you are currently following for this project.
+```
+
+3. Bob should reference the project-wide rules you defined.
+4. Now switch to **📝 Doc Writer** mode, start a new chat, and ask the same question. Bob should additionally reference the Doc Writer-specific style rules.
+
+✅ **Checkpoint:** `.bob/rules/project-rules.md` and `.bob/rules-doc-writer/01-style.md` both exist. Bob's responses reflect the rules in both modes.
 
 ## 🧠 Clue 8 — The Instruction Manual (Skills)
 
@@ -434,8 +471,8 @@ Include a brief, one-sentence description of these five IBM Bob IDE features:
 1. Explorer
 2. Editor
 3. Bob Chat Panel
-4. Integrated Terminal
-5. Mode Selector
+4. Mode Selector
+5. Integrated Terminal
 
 Keep the entire response under 150 words. Use a friendly, encouraging tone.
 ```
@@ -458,8 +495,8 @@ Include a brief, one-sentence description of these five IBM Bob IDE features:
 1. Explorer
 2. Editor
 3. Bob Chat Panel
-4. Integrated Terminal
-5. Mode Selector
+4. Mode Selector
+5. Integrated Terminal
 
 Keep the entire response under 150 words. Use a friendly, encouraging tone.
 '@ | Out-File -FilePath .bob/skills/hello-skill/SKILL.md -Encoding utf8
@@ -477,8 +514,8 @@ Include a brief, one-sentence description of these five IBM Bob IDE features:
 1. Explorer
 2. Editor
 3. Bob Chat Panel
-4. Integrated Terminal
-5. Mode Selector
+4. Mode Selector
+5. Integrated Terminal
 
 Keep the entire response under 150 words. Use a friendly, encouraging tone.
 EOF
@@ -499,93 +536,96 @@ Give me a welcome message introducing the IBM Bob IDE.
 
 ✅ **Checkpoint:** Bob responded with a structured welcome message covering the five IDE features, matching the style and length constraints you defined in the skill.
 
-## 📋 Clue 9 — The Standing Orders (Rules)
+## 🧭 Clue 9 — The Memory Vault (The Context Window)
 
-> *"Every crew operates under standing orders. Find where you leave persistent instructions that Bob always follows."*
+> *"Every journey requires managing what you carry. Find where Bob tracks its memory and learn how to keep your conversations sharp and within budget."*
 
 ### Background
 
-**Rules** are persistent instructions that Bob applies to every conversation in a given scope. They are stored as plain text or Markdown files:
+The **Context Window** represents the total amount of information Bob can hold "in mind" during a single conversation (up to **270,000 tokens**). Everything in the session shares this space:
 
-| Location                          | Applies to                              |
-|-----------------------------------|-----------------------------------------|
-| `.bob/rules/`                     | All modes in this project               |
-| `.bob/rules-{mode-slug}/`         | A specific mode in this project         |
-| `~/.bob/rules/`                   | All modes globally (all workspaces)     |
+1. **System prompt & active mode** definition
+2. **Rules** loaded from `.bob/rules/`
+3. **MCP Tool schemas** from connected servers
+4. **Conversation history** (your messages and Bob's answers)
+5. **File reads & diffs** performed during tasks
 
-Files inside the rules directory are loaded alphabetically and combined. Supported file extensions: `.md`, `.txt`.
+When conversations exceed ~100,000 tokens, model reasoning quality can begin to decline, and reaching the limit forces an automatic, lossy summarization into a background session. Managing your context is an essential skill:
 
-### Challenge 9A — Create a project-wide rules file
+- **Reset context frequently** using the **New Chat / New Task (`+`)** button when changing tasks.
+- **Reference files selectively** with context mentions (e.g. `@/path/to/file`) instead of pasting large snippets into chat.
+- **Produce persistent artifacts** (save plans or documents to disk, then reference them in a clean session).
 
-Create a rules file that applies to all modes in this project. Run the following in the **IDE's Integrated Terminal** (**Ctrl + `` ` ``**):
+### Challenge 9A — Locate the token counter and inspect usage
 
-::: tabs key:MacOS/LinuxWindows
-== Windows
-```
-@'
-# Project Rules
+1. Look near the bottom or top bar of the **Bob Chat Panel** to locate the **Context / Token Usage indicator** (e.g., displaying current token count and percentage of the context window used).
+2. Hover over or observe the meter to see how rules, tools, and the current conversation history contribute to token consumption.
 
-- Always respond in English.
-- When suggesting file paths, use forward slashes even on Windows.
-- Keep all code examples minimal — include only what is necessary to illustrate the point.
-- When you are unsure about a requirement, ask a clarifying question before proceeding.
-'@ | Out-File -FilePath .bob/rules/project-rules.md -Encoding utf8
-```
-== MacOS / Linux
-```
-cat > .bob/rules/project-rules.md << 'EOF'
-# Project Rules
+### Challenge 9B — Reset context and use a targeted file mention
 
-- Always respond in English.
-- When suggesting file paths, use forward slashes even on Windows.
-- Keep all code examples minimal — include only what is necessary to illustrate the point.
-- When you are unsure about a requirement, ask a clarifying question before proceeding.
-EOF
-```
-:::
-
-### Challenge 9B — Create a mode-specific rules file
-
-Now add rules that apply **only** when Bob is in your custom `doc-writer` mode. Run the following in the **IDE's Integrated Terminal** (**Ctrl + `` ` ``**):
-
-::: tabs key:MacOS/LinuxWindows
-== Windows
-```
-@'
-# Doc Writer Style Rules
-
-- Always use sentence case for headings (not Title Case).
-- Use second-person ("you") throughout.
-- Avoid jargon; define technical terms on first use.
-- Every code example must have a one-line comment explaining what it does.
-'@ | Out-File -FilePath .bob/rules-doc-writer/01-style.md -Encoding utf8
-```
-== MacOS / Linux
-```
-cat > .bob/rules-doc-writer/01-style.md << 'EOF'
-# Doc Writer Style Rules
-
-- Always use sentence case for headings (not Title Case).
-- Use second-person ("you") throughout.
-- Avoid jargon; define technical terms on first use.
-- Every code example must have a one-line comment explaining what it does.
-EOF
-```
-:::
-
-### Challenge 9C — Verify rules are loaded
-
-1. Switch to **Agent** mode in the mode selector.
-2. Start a new chat and ask:
+1. Click the **+** (New Task / New Chat) button at the top-right of the Bob Chat Panel.
+2. Notice how the token meter resets to baseline (only loading system instructions, active mode, rules, and tool definitions).
+3. In the new clean chat session, send a targeted message using an `@` file mention:
 
 ```
-Summarise the rules you are currently following for this project.
+Summarise my current progress in @scavenger-notes.md and list what remains unchecked.
 ```
 
-3. Bob should reference the project-wide rules you defined.
-4. Now switch to **📝 Doc Writer** mode, start a new chat, and ask the same question. Bob should additionally reference the Doc Writer-specific style rules.
+4. Verify Bob reads `scavenger-notes.md` directly via the mention without needing the entire file pasted into the prompt.
 
-✅ **Checkpoint:** `.bob/rules/project-rules.md` and `.bob/rules-doc-writer/01-style.md` both exist. Bob's responses reflect the rules in both modes.
+✅ **Checkpoint:** You located the context window token indicator, reset the context using the **+** button, and successfully used an `@` file mention in a clean conversation.
+
+## 🔌 Clue 10 — The Power Sockets (MCP Servers)
+
+> *"The IDE has power sockets that let you plug in external tools. Find where to manage them."*
+
+### Background
+
+**Model Context Protocol (MCP)** lets you connect external tools and services to Bob. Bob discovers available tools, calls them on your behalf, and uses the results to answer your questions or complete tasks.
+
+MCP configuration is stored in JSON files at two levels:
+
+| Level   | File location                 | Scope             |
+|---------|-------------------------------|-------------------|
+| Global  | `~/.bob/mcp.json`             | All workspaces    |
+| Project | `.bob/mcp.json` in project root | This workspace only |
+
+Project-level config takes precedence when server names conflict.
+
+### Challenge 10A — Open MCP settings via the UI
+
+1. Open **Bob Settings** (click the ⚙️ gear icon in the Bob sidebar, or run the **Bob: Open Settings** command).
+2. In the left navigation, select **MCP**.
+3. Observe the MCP servers table and the **+** button to add a new server.
+4. Click the **+** button, select the Configuration Scope and click the Open Configuration File button.
+
+### Challenge 10B — Add a local MCP server entry
+
+In the `.bob/mcp.json` file that just opened in your Editor, replace the entire contents with the following configuration. This registers a placeholder STDIO server — you will not start it, but configuring the entry teaches you the format.
+
+```json
+{
+  "mcpServers": {
+    "my-local-tools": {
+      "command": "node",
+      "args": ["tools/server.js"],
+      "disabled": true,
+      "env": {}
+    }
+  }
+}
+```
+
+> **Note:** `"disabled": true` prevents Bob from trying to start the server, so no Node.js process is launched. This is intentional for the purposes of this exercise.
+
+Save the file with **Cmd + S** (macOS) or **Ctrl + S** (Windows/Linux).
+
+### Challenge 10C — Verify the configuration
+
+1. Go back to **Settings → MCP** in the Bob panel.
+2. You should see `my-local-tools` listed as a server entry with a **disabled** status.
+
+✅ **Checkpoint:** `.bob/mcp.json` exists in your project, contains the `my-local-tools` server entry, and the MCP tab in Settings shows the server (marked disabled).
 
 ## 🏁 Final Checkpoint — The Complete Map
 
@@ -618,27 +658,29 @@ Open `scavenger-notes.md` in the Editor and mark all remaining items as complete
 - [x] Explorer
 - [x] Editor
 - [x] Bob Chat Panel
-- [x] Integrated Terminal
 - [x] Mode Selector
-- [x] MCP Servers
+- [x] Integrated Terminal
 - [x] Modes
-- [x] Skills
 - [x] Rules
+- [x] Skills
+- [x] Context Window
+- [x] MCP Servers
 ```
 
 ## 📚 What You Learned
 
-| Feature           | Where to find it                              | Config file(s)                                          |
-|-------------------|-----------------------------------------------|---------------------------------------------------------|
-| **Explorer**      | Left activity bar — file tree icon            | n/a                                                     |
-| **Editor**        | Central pane — tabs for open files            | n/a                                                     |
-| **Bob Chat Panel**| Right-side panel (Option+Cmd+B / Ctrl+Alt+B)  | n/a                                                     |
-| **Terminal**      | Bottom pane (Ctrl + `` ` ``)                  | n/a                                                     |
-| **Mode Selector** | Dropdown left of chat input                   | n/a                                                     |
-| **MCP Servers**   | Settings ⚙️ → MCP tab                         | `.bob/mcp.json` / `~/.bob/mcp.json`                     |
-| **Modes**         | Settings ⚙️ → Modes tab or Mode Selector gear | `.bob/custom_modes.yaml` / `~/.bob/settings/custom_modes.yaml` |
-| **Skills**        | `.bob/skills/<name>/SKILL.md`                 | `.bob/skills/` / `~/.bob/skills/`                       |
-| **Rules**         | `.bob/rules/` or `.bob/rules-{slug}/`         | `.bob/rules/` / `~/.bob/rules/`                         |
+| Feature              | Where to find it                              | Config file(s)                                          |
+|----------------------|-----------------------------------------------|---------------------------------------------------------|
+| **Explorer**         | Left activity bar — file tree icon            | n/a                                                     |
+| **Editor**           | Central pane — tabs for open files            | n/a                                                     |
+| **Bob Chat Panel**   | Right-side panel (Option+Cmd+B / Ctrl+Alt+B)  | n/a                                                     |
+| **Mode Selector**    | Dropdown left of chat input                   | n/a                                                     |
+| **Terminal**         | Bottom pane (Ctrl + `` ` ``)                  | n/a                                                     |
+| **Modes**            | Settings ⚙️ → Modes tab or Mode Selector gear | `.bob/custom_modes.yaml` / `~/.bob/settings/custom_modes.yaml` |
+| **Rules**            | `.bob/rules/` or `.bob/rules-{slug}/`         | `.bob/rules/` / `~/.bob/rules/`                         |
+| **Skills**           | `.bob/skills/<name>/SKILL.md`                 | `.bob/skills/` / `~/.bob/skills/`                       |
+| **Context Window**   | Chat panel footer / header meter (`+` New Chat) | Token budget & `.bob/rules/` loading                   |
+| **MCP Servers**      | Settings ⚙️ → MCP tab                         | `.bob/mcp.json` / `~/.bob/mcp.json`                     |
 
 ## 🔑 Quick Reference — Keyboard Shortcuts
 
