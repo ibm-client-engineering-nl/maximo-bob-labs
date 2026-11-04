@@ -56,7 +56,7 @@ Click the **Manage** link, in the window that pops up click the **Trust** button
 
 ### Permissions
 
-With the workspace open, check the **Permissions**. You find a drop-down at the bottom of the Bob chat input. You should see **"Read"** permission is auto-approved. Bob will prompt for approval for the other permissions, for the lab leave the settings as is.
+With the workspace open, check the **Permissions**. You find a dropdown at the bottom of the Bob chat panel. You should see **"Read"** permission is auto-approved. Bob will prompt for approval for the other permissions, for the lab leave the settings as is.
 
 ✅ **Checkpoint:** The Explorer panel shows the `bob-scavenger-hunt` folder as the workspace root, the title bar reflects the folder name, and auto-approval is only enabled for the **Read** permission.
 
@@ -131,11 +131,11 @@ Literate Coding lets you write a plain-English instruction directly in the edito
 
 ### Background
 
-The **Bob Chat Panel** lives on the right side (or can float) of the IDE. It has three parts:
+The **Bob Chat Panel** lives on the right side of the IDE. It has three parts:
 
-- **Chat history** — your conversation with Bob scrolls here.
-- **Input field** — type your natural-language requests at the bottom.
-- **Send message button** — press **Enter** or click the arrow-up icon to send.
+- **Top Bar** -- with controls (Settings, History, New Task, More, Fullscreen, Close).
+- **Conversation History** -- your conversation with Bob scrolls here.
+- **Input Area** -- input field and bottom controls: Attachment button (`+`), `Permissions ⌵` dropdown, and submit arrow (`↑`).
 
 You can open or close the panel with **Option + Cmd + B** (macOS) or **Ctrl + Alt + B** (Windows/Linux).
 
@@ -158,7 +158,7 @@ What files are currently in my workspace?
 Open scavenger-notes.md and mark the "Editor" and "Bob Chat Panel" items as complete by changing [ ] to [x].
 ```
 
-1. Click **Approve edit tools for task**.
+2. Click **Approve edit tools for task**.
 
 ✅ **Checkpoint:** In the chat panel you have a conversation history. `scavenger-notes.md` now shows `[x]` next to both **Editor** and **Bob Chat Panel**.
 
@@ -168,7 +168,7 @@ Open scavenger-notes.md and mark the "Editor" and "Bob Chat Panel" items as comp
 
 ### Background
 
-Bob operates in **modes**, each with a defined set of permissions and a specific role. The **Mode Selector** is under the + (Add to task) icon to the **left of the Permissions dropdown**. Built-in modes include:
+Bob operates in **modes**, each with a defined set of permissions and a specific role. The **Mode Selector** is under the Attachment button (`+`). Built-in modes include:
 
 | Mode  | What Bob can do |
 |-------|----------------|
@@ -180,8 +180,8 @@ You can also switch modes with the keyboard shortcut **Cmd + .** (macOS) / **Ctr
 
 ### Challenge 4A — Explore the mode selector
 
-1. Look at the bottom of the Bob Chat Panel. To the left of the **Permissions** dropdown you will see the + icon.
-2. Click it and switch to **Ask** mode. A badge stating **Ask** appears to the right of the **Permissions** dropdown. 
+1. Look at the bottom of the Bob Chat Panel. At the bottom left you will see the Attachment button (`+`).
+2. Click it and switch to **Ask** mode. A badge stating **Mode Ask** appears to the right of the **Permissions** dropdown. 
 3. In the chat input, type:
 
 ```
@@ -192,9 +192,9 @@ What is the purpose of the .bob folder?
 
 ### Challenge 4B — Switch back to Agent mode
 
-1. Click the + icon again and switch back to **Agent** mode. Alternatively you can hover over the **Ask** badge and close it.
+1. Click the Attachment button (`+`) again and switch back to **Agent** mode. Alternatively you can hover over the **Mode Ask** badge and click close (`x`).
 
-The **Ask** badge disappears. For the default mode **Agent** no badge is displayed.
+The **Mode Ask** badge disappears. Note that for the default mode **Agent** no badge is displayed.
 
 ✅ **Checkpoint:** You have successfully switched between Ask mode and Agent mode.
 
@@ -266,7 +266,7 @@ You can create modes through the **Settings → Modes** UI or by editing the YAM
 
 ### Challenge 6A — Create a custom mode via the UI
 
-1. Click the **gear icon** (⚙️) inside the **Mode Selector** dropdown (next to the mode name), or go to **Settings → Modes**.
+1. Click the **gear icon** (⚙️) inside the **Top Bar** then click **Modes**.
 2. Click the **+** (Add) icon to create a new mode.
 3. Fill in the following values:
 
@@ -334,7 +334,7 @@ EOF
 
 ### Challenge 6C — Use your custom mode
 
-1. Click the + (Add to task) icon at the bottom of the Chat Panel.
+1. Click the Attachment button (`+`).
 2. Confirm **📝 Doc Writer** appears in the list.
 3. Switch to it and send the following message:
 
@@ -525,7 +525,7 @@ EOF
 
 ### Challenge 8B — Trigger the skill
 
-1. Start a **new task** conversation by clicking the **+** (New Task) icon at the top of the Bob Chat Panel. This ensures a fresh context window.
+1. Start a **new task** by clicking the **+** (New Task) icon inside the top bar. This ensures a fresh context window.
 2. In the chat input, type:
 
 ```
@@ -559,14 +559,14 @@ When conversations exceed ~100,000 tokens, model reasoning quality can begin to 
 
 ### Challenge 9A — Locate the token counter and inspect usage
 
-1. Look near the bottom or top bar of the **Bob Chat Panel** to locate the **Context / Token Usage indicator** (e.g., displaying current token count and percentage of the context window used).
-2. Hover over or observe the meter to see how rules, tools, and the current conversation history contribute to token consumption.
+1. Look near the right bottom of the **Bob Chat Panel** to locate the **Context / Token Usage indicator** (left side of the Bob coin meter).
+2. Hover over and see how rules, tools, and the current conversation history contribute to token consumption.
 
 ### Challenge 9B — Reset context and use a targeted file mention
 
-1. Click the **+** (New Task) button at the top-right of the Bob Chat Panel.
-2. Notice how the token meter resets to baseline (only loading system instructions, active mode, rules, and tool definitions).
-3. In the new clean chat session, send a targeted message using an `@` file mention:
+1. Start a new task.
+2. Notice how both the indicator and meter disappear.
+3. Send a targeted message using an `@` file mention:
 
 ```
 Summarise my current progress in @scavenger-notes.md and list what remains unchecked.
@@ -574,7 +574,7 @@ Summarise my current progress in @scavenger-notes.md and list what remains unche
 
 4. Verify Bob reads `scavenger-notes.md` directly via the mention without needing the entire file pasted into the prompt.
 
-✅ **Checkpoint:** You located the context window token indicator, reset the context using the **+** button, and successfully used an `@` file mention in a clean conversation.
+✅ **Checkpoint:** You located the context window token indicator, reset the context using the **+** New Task button, and successfully used an `@` file mention in a clean conversation.
 
 ## 🔌 Clue 10 — The Power Sockets (MCP Servers)
 
@@ -595,7 +595,7 @@ Project-level config takes precedence when server names conflict.
 
 ### Challenge 10A — Open MCP settings via the UI
 
-1. Open **Bob Settings** (click the ⚙️ gear icon in the Bob sidebar, or run the **Bob: Open Settings** command).
+1. Open **Bob Settings** (click the ⚙️ gear icon in the top bar, or run the **Bob: Open Settings** command).
 2. In the left navigation, select **MCP**.
 3. Observe the MCP servers table and the **+** button to add a new server.
 4. Click the **+** button, select the Configuration Scope and click the Open Configuration File button.
