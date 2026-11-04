@@ -135,7 +135,7 @@ The **Bob Chat Panel** lives on the right side (or can float) of the IDE. It has
 
 - **Chat history** — your conversation with Bob scrolls here.
 - **Input field** — type your natural-language requests at the bottom.
-- **Send button** — press **Enter** or click the paper-plane icon to send.
+- **Send message button** — press **Enter** or click the arrow-up icon to send.
 
 You can open or close the panel with **Option + Cmd + B** (macOS) or **Ctrl + Alt + B** (Windows/Linux).
 
@@ -164,11 +164,11 @@ Open scavenger-notes.md and mark the "Editor" and "Bob Chat Panel" items as comp
 
 ## 🎭 Clue 4 — The Costume Room (Mode Selector)
 
-> *"Every actor needs a costume. Find the control beside the chat input that changes Bob's role."*
+> *"Every actor needs a costume. Find the control inside the chat input that changes Bob's role."*
 
 ### Background
 
-Bob operates in **modes**, each with a defined set of permissions and a specific role. The **Mode Selector** is the dropdown to the **left of the chat input field**. Built-in modes include:
+Bob operates in **modes**, each with a defined set of permissions and a specific role. The **Mode Selector** is under the + (Add to task) icon to the **left of the Permissions dropdown**. Built-in modes include:
 
 | Mode  | What Bob can do |
 |-------|----------------|
@@ -180,7 +180,7 @@ You can also switch modes with the keyboard shortcut **Cmd + .** (macOS) / **Ctr
 
 ### Challenge 4A — Explore the mode selector
 
-1. Look at the bottom of the Bob Chat Panel. To the left of the **Permissions** dropdown you will see a button with a plus sign.
+1. Look at the bottom of the Bob Chat Panel. To the left of the **Permissions** dropdown you will see the + icon.
 2. Click it and switch to **Ask** mode. A badge stating **Ask** appears to the right of the **Permissions** dropdown. 
 3. In the chat input, type:
 
@@ -192,11 +192,11 @@ What is the purpose of the .bob folder?
 
 ### Challenge 4B — Switch back to Agent mode
 
-1. Click the plus sign again and switch back to **Agent** mode. Alternatively you can click close on the **Ask** badge.
+1. Click the + icon again and switch back to **Agent** mode. Alternatively you can hover over the **Ask** badge and close it.
 
 The **Ask** badge disappears. For the default mode **Agent** no badge is displayed.
 
-✅ **Checkpoint:** You have successfully switched between Ask mode and Agent mode using the mode selector dropdown.
+✅ **Checkpoint:** You have successfully switched between Ask mode and Agent mode.
 
 ## 🖥️ Clue 5 — The Engine Room (Integrated Terminal)
 
@@ -334,7 +334,7 @@ EOF
 
 ### Challenge 6C — Use your custom mode
 
-1. Click the mode selector dropdown at the bottom of the Chat Panel.
+1. Click the + (Add to task) icon at the bottom of the Chat Panel.
 2. Confirm **📝 Doc Writer** appears in the list.
 3. Switch to it and send the following message:
 
@@ -423,15 +423,14 @@ EOF
 
 ### Challenge 7C — Verify rules are loaded
 
-1. Switch to **Agent** mode in the mode selector.
-2. Start a new chat and ask:
+1. Start a new task and ask:
 
 ```
 Summarise the rules you are currently following for this project.
 ```
 
-3. Bob should reference the project-wide rules you defined.
-4. Now switch to **📝 Doc Writer** mode, start a new chat, and ask the same question. Bob should additionally reference the Doc Writer-specific style rules.
+2. Bob should reference the project-wide rules you defined.
+3. Now switch to **📝 Doc Writer** mode, start a new task, and ask the same question. Bob should additionally reference the Doc Writer-specific style rules.
 
 ✅ **Checkpoint:** `.bob/rules/project-rules.md` and `.bob/rules-doc-writer/01-style.md` both exist. Bob's responses reflect the rules in both modes.
 
@@ -526,7 +525,7 @@ EOF
 
 ### Challenge 8B — Trigger the skill
 
-1. Start a **new chat** conversation by clicking the **+** (New Chat) icon at the top of the Bob Chat Panel. This ensures a fresh context window.
+1. Start a **new task** conversation by clicking the **+** (New Task) icon at the top of the Bob Chat Panel. This ensures a fresh context window.
 2. In the chat input, type:
 
 ```
@@ -554,7 +553,7 @@ The **Context Window** represents the total amount of information Bob can hold "
 
 When conversations exceed ~100,000 tokens, model reasoning quality can begin to decline, and reaching the limit forces an automatic, lossy summarization into a background session. Managing your context is an essential skill:
 
-- **Reset context frequently** using the **New Chat / New Task (`+`)** button when changing tasks.
+- **Reset context frequently** using the **New Task (`+`)** button when changing tasks.
 - **Reference files selectively** with context mentions (e.g. `@/path/to/file`) instead of pasting large snippets into chat.
 - **Produce persistent artifacts** (save plans or documents to disk, then reference them in a clean session).
 
@@ -565,7 +564,7 @@ When conversations exceed ~100,000 tokens, model reasoning quality can begin to 
 
 ### Challenge 9B — Reset context and use a targeted file mention
 
-1. Click the **+** (New Task / New Chat) button at the top-right of the Bob Chat Panel.
+1. Click the **+** (New Task) button at the top-right of the Bob Chat Panel.
 2. Notice how the token meter resets to baseline (only loading system instructions, active mode, rules, and tool definitions).
 3. In the new clean chat session, send a targeted message using an `@` file mention:
 
@@ -681,7 +680,7 @@ Open `scavenger-notes.md` in the Editor and mark all remaining items as complete
 | **Modes**            | Settings ⚙️ → Modes tab or Mode Selector gear | `.bob/custom_modes.yaml` / `~/.bob/settings/custom_modes.yaml` |
 | **Rules**            | `.bob/rules/` or `.bob/rules-{slug}/`         | `.bob/rules/` / `~/.bob/rules/`                         |
 | **Skills**           | `.bob/skills/<name>/SKILL.md`                 | `.bob/skills/` / `~/.bob/skills/`                       |
-| **Context Window**   | Chat panel footer / header meter (`+` New Chat) | Token budget & `.bob/rules/` loading                   |
+| **Context Window**   | Chat panel footer / header meter (`+` New Task) | Token budget & `.bob/rules/` loading                   |
 | **MCP Servers**      | Settings ⚙️ → MCP tab                         | `.bob/mcp.json` / `~/.bob/mcp.json`                     |
 
 ## 🔑 Quick Reference — Keyboard Shortcuts
