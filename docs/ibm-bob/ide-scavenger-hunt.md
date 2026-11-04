@@ -180,8 +180,8 @@ You can also switch modes with the keyboard shortcut **Cmd + .** (macOS) / **Ctr
 
 ### Challenge 4A — Explore the mode selector
 
-1. Look at the bottom of the Bob Chat Panel. To the left of the text input field you will see a dropdown showing the current mode (e.g. **Agent**).
-2. Click the dropdown and switch to **Ask** mode.
+1. Look at the bottom of the Bob Chat Panel. To the left of the **Permissions** dropdown you will see a button with a plus sign.
+2. Click it and switch to **Ask** mode. A badge stating **Ask** appears to the right of the **Permissions** dropdown. 
 3. In the chat input, type:
 
 ```
@@ -192,9 +192,11 @@ What is the purpose of the .bob folder?
 
 ### Challenge 4B — Switch back to Agent mode
 
-1. Click the mode selector dropdown again and switch back to **Agent** mode.
+1. Click the plus sign again and switch back to **Agent** mode. Alternatively you can click close on the **Ask** badge.
 
-✅ **Checkpoint:** You have successfully switched between Ask mode and Agent mode using the mode selector dropdown. The current mode shown in the selector is **Agent**.
+The **Ask** badge disappears. For the default mode **Agent** no badge is displayed.
+
+✅ **Checkpoint:** You have successfully switched between Ask mode and Agent mode using the mode selector dropdown.
 
 ## 🖥️ Clue 5 — The Engine Room (Integrated Terminal)
 
